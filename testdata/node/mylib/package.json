@@ -1,0 +1,37 @@
+{
+  "name": "@dudesons/example-test",
+  "type": "module",
+  "private": true,
+  "license": "UNLICENSED",
+  "homepage": "https://github.com/peacock27/service-common",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dudesons/daggerverse.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "engines": {
+    "node": "20.9.0"
+  },
+  "exports": {
+    "./*": "./dist/*.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:dev": "vitest"
+  },
+  "devDependencies": {
+    "@vitest/ui": "latest",
+    "vite": "latest",
+    "vitest": "latest",
+    "ts-node": "^10.9.2",
+    "tsx": "^3.9.0",
+    "typescript": "^5.3.3"
+  }
+}

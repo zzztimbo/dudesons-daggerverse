@@ -1,0 +1,20 @@
+{
+  "name": "ci",
+  "sdk": "go",
+  "dependencies": [
+    {
+      "name": "autodetection",
+      "source": "../autodetection"
+    },
+    {
+      "name": "node",
+      "source": "../node"
+    },
+    {
+      "name": "yq",
+      "source": "../yq"
+    }
+  ],
+  "source": "dagger",
+  "engineVersion": "v0.10.0"
+}

@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "rootDir": "./src",
+
+    "allowJs": false,
+    "jsx": "react",
+    "jsxFactory": "jsx.createElement",
+    "outDir": "dist",
+
+    "target": "es2017",
+    "module": "nodenext",
+
+    "moduleResolution": "nodenext",
+    "importHelpers": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "types": ["node", "vitest/globals"],
+    "strict": true,
+    "alwaysStrict": true,
+    "downlevelIteration": false,
+    "declaration": false,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "useUnknownInCatchVariables": false,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "exactOptionalPropertyTypes": false, // because of service-common
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": false,
+    "noPropertyAccessFromIndexSignature": false, // because of service-common
+    "noUnusedParameters": false, // because of service-common
+    "verbatimModuleSyntax": false, // because of service-common not being an esm module...
+    "forceConsistentCasingInFileNames": true,
+  },
+  "include": [ "src/**/*" ],
+  "ts-node": { "esm": true, "experimentalSpecifierResolution": "node" }
+}

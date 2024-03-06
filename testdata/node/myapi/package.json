@@ -1,0 +1,36 @@
+{
+  "name": "testdata-fastify",
+  "type": "module",
+  "private": true,
+  "license": "UNLICENSED",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dudesons/daggerverse.git"
+  },
+  "engines": {
+    "node": "20.9.0"
+  },
+  "scripts": {
+    "dev": "NODE_ENV=development tsx watch src",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "clean": "rm -rf .cache/",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@types/node": "^20.11.24",
+    "fastify": "4.26.2",
+    "install": "^0.13.0"
+  },
+  "devDependencies": {
+    "@vitest/ui": "latest",
+    "axios": "^0.26.1",
+    "supertest": "6.2.4",
+    "ts-node": "^10.9.2",
+    "tsx": "^3.9.0",
+    "typescript": "^5.3.3",
+    "vite": "latest",
+    "vitest": "latest"
+  }
+}

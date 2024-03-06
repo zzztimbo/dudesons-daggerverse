@@ -1,0 +1,12 @@
+{
+  "name": "node",
+  "sdk": "go",
+  "dependencies": [
+    {
+      "name": "autodetection",
+      "source": "../autodetection"
+    }
+  ],
+  "source": "dagger",
+  "engineVersion": "v0.10.0"
+}

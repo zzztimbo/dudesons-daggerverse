@@ -24,3 +24,6 @@ dist/
 # Dagger generated files TODO(Check if we want to ignore them)
 #**/dagger/dagger.gen.go
 #**/dagger/internal/
+
+# CI folders
+**/node_modules/

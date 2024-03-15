@@ -677,6 +677,13 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
 			return (*Node).Container(&parent), nil
+		case "Directory":
+			var parent Node
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			return (*Node).Directory(&parent), nil
 		case "Shell":
 			var parent Node
 			err = json.Unmarshal(parentJSON, &parent)
@@ -733,6 +740,55 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
 			return (*Node).Do(&parent, ctx)
+		case "OciBuild":
+			var parent Node
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var fileContainerArtifacts []string
+			if inputArgs["fileContainerArtifacts"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["fileContainerArtifacts"]), &fileContainerArtifacts)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg fileContainerArtifacts", err))
+				}
+			}
+			var directoryContainerArtifacts []string
+			if inputArgs["directoryContainerArtifacts"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["directoryContainerArtifacts"]), &directoryContainerArtifacts)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg directoryContainerArtifacts", err))
+				}
+			}
+			var registries []string
+			if inputArgs["registries"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["registries"]), &registries)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registries", err))
+				}
+			}
+			var isTtl bool
+			if inputArgs["isTtl"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["isTtl"]), &isTtl)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg isTtl", err))
+				}
+			}
+			var ttlRegistry string
+			if inputArgs["ttlRegistry"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["ttlRegistry"]), &ttlRegistry)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg ttlRegistry", err))
+				}
+			}
+			var ttl string
+			if inputArgs["ttl"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["ttl"]), &ttl)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg ttl", err))
+				}
+			}
+			return (*Node).OciBuild(&parent, ctx, fileContainerArtifacts, directoryContainerArtifacts, registries, isTtl, ttlRegistry, ttl)
 		case "WithVersion":
 			var parent Node
 			err = json.Unmarshal(parentJSON, &parent)
@@ -1069,111 +1125,6 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				}
 			}
 			return (*Node).BumpVersion(&parent, strategy, message), nil
-		case "OciBuild":
-			var parent Node
-			err = json.Unmarshal(parentJSON, &parent)
-			if err != nil {
-				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
-			}
-			var fileContainerArtifacts []string
-			if inputArgs["fileContainerArtifacts"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["fileContainerArtifacts"]), &fileContainerArtifacts)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg fileContainerArtifacts", err))
-				}
-			}
-			var directoryContainerArtifacts []string
-			if inputArgs["directoryContainerArtifacts"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["directoryContainerArtifacts"]), &directoryContainerArtifacts)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg directoryContainerArtifacts", err))
-				}
-			}
-			var registries []string
-			if inputArgs["registries"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["registries"]), &registries)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg registries", err))
-				}
-			}
-			var isTtl bool
-			if inputArgs["isTtl"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["isTtl"]), &isTtl)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg isTtl", err))
-				}
-			}
-			var ttlRegistry string
-			if inputArgs["ttlRegistry"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["ttlRegistry"]), &ttlRegistry)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg ttlRegistry", err))
-				}
-			}
-			var ttl string
-			if inputArgs["ttl"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["ttl"]), &ttl)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg ttl", err))
-				}
-			}
-			return (*Node).OciBuild(&parent, ctx, fileContainerArtifacts, directoryContainerArtifacts, registries, isTtl, ttlRegistry, ttl)
-		case "WithAutoSetup":
-			var parent Node
-			err = json.Unmarshal(parentJSON, &parent)
-			if err != nil {
-				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
-			}
-			var pipelineId string
-			if inputArgs["pipelineId"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["pipelineId"]), &pipelineId)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg pipelineId", err))
-				}
-			}
-			var src *Directory
-			if inputArgs["src"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["src"]), &src)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
-				}
-			}
-			var patternExclusions []string
-			if inputArgs["patternExclusions"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["patternExclusions"]), &patternExclusions)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg patternExclusions", err))
-				}
-			}
-			var image string
-			if inputArgs["image"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["image"]), &image)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg image", err))
-				}
-			}
-			var isAlpine bool
-			if inputArgs["isAlpine"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["isAlpine"]), &isAlpine)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg isAlpine", err))
-				}
-			}
-			var containerPlatform Platform
-			if inputArgs["containerPlatform"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["containerPlatform"]), &containerPlatform)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg containerPlatform", err))
-				}
-			}
-			var systemSetupCmds [][]string
-			if inputArgs["systemSetupCmds"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["systemSetupCmds"]), &systemSetupCmds)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg systemSetupCmds", err))
-				}
-			}
-			return (*Node).WithAutoSetup(&parent, ctx, pipelineId, src, patternExclusions, image, isAlpine, containerPlatform, systemSetupCmds)
 		case "Pipeline":
 			var parent Node
 			err = json.Unmarshal(parentJSON, &parent)
@@ -1258,6 +1209,62 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				}
 			}
 			return (*Node).Pipeline(&parent, ctx, preHooks, postHooks, isOci, dryRun, packageAccess, packageDevTag, fileContainerArtifacts, directoryContainerArtifacts, ociRegistries, ttlRegistry, ttl)
+		case "WithAutoSetup":
+			var parent Node
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var pipelineId string
+			if inputArgs["pipelineId"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["pipelineId"]), &pipelineId)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg pipelineId", err))
+				}
+			}
+			var src *Directory
+			if inputArgs["src"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["src"]), &src)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
+				}
+			}
+			var patternExclusions []string
+			if inputArgs["patternExclusions"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["patternExclusions"]), &patternExclusions)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg patternExclusions", err))
+				}
+			}
+			var image string
+			if inputArgs["image"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["image"]), &image)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg image", err))
+				}
+			}
+			var isAlpine bool
+			if inputArgs["isAlpine"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["isAlpine"]), &isAlpine)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg isAlpine", err))
+				}
+			}
+			var containerPlatform Platform
+			if inputArgs["containerPlatform"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["containerPlatform"]), &containerPlatform)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg containerPlatform", err))
+				}
+			}
+			var systemSetupCmds [][]string
+			if inputArgs["systemSetupCmds"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["systemSetupCmds"]), &systemSetupCmds)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg systemSetupCmds", err))
+				}
+			}
+			return (*Node).WithAutoSetup(&parent, ctx, pipelineId, src, patternExclusions, image, isAlpine, containerPlatform, systemSetupCmds)
 		default:
 			return nil, fmt.Errorf("unknown function %s", fnName)
 		}
@@ -1270,6 +1277,10 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 						dag.Function("Container",
 							dag.TypeDef().WithObject("Container")).
 							WithDescription("Return the current container state")).
+					WithFunction(
+						dag.Function("Directory",
+							dag.TypeDef().WithObject("Directory")).
+							WithDescription("Return the current working directory")).
 					WithFunction(
 						dag.Function("Shell",
 							dag.TypeDef().WithObject("Terminal")).
@@ -1293,6 +1304,16 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 						dag.Function("Do",
 							dag.TypeDef().WithKind(StringKind)).
 							WithDescription("Execute all commands")).
+					WithFunction(
+						dag.Function("OciBuild",
+							dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind))).
+							WithDescription("Build a production image and push to one or more registries").
+							WithArg("fileContainerArtifacts", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind)).WithOptional(true), FunctionWithArgOpts{Description: "Define path to fo file to fetch from the build container"}).
+							WithArg("directoryContainerArtifacts", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind)).WithOptional(true), FunctionWithArgOpts{Description: "Define path to fo directories to fetch from the build container"}).
+							WithArg("registries", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind)), FunctionWithArgOpts{Description: "Define registries where to push the image"}).
+							WithArg("isTtl", dag.TypeDef().WithKind(BooleanKind).WithOptional(true), FunctionWithArgOpts{Description: "Define the ttl registry to use"}).
+							WithArg("ttlRegistry", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "Define the ttl registry to use", DefaultValue: JSON("\"ttl.sh\"")}).
+							WithArg("ttl", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "Define the ttl in the ttl registry", DefaultValue: JSON("\"60m\"")})).
 					WithFunction(
 						dag.Function("WithVersion",
 							dag.TypeDef().WithObject("Node")).
@@ -1402,13 +1423,18 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 							WithArg("strategy", dag.TypeDef().WithKind(StringKind), FunctionWithArgOpts{Description: "Define the bump version strategy (major | minor | patch | premajor | preminor | prepatch | prerelease)"}).
 							WithArg("message", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "The message will use it as a commit message when creating a version commit. If the message config contains %s then that will be replaced with the resulting version number"})).
 					WithFunction(
-						dag.Function("OciBuild",
-							dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind))).
-							WithDescription("Build a production image and push to one or more registries").
-							WithArg("fileContainerArtifacts", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind)).WithOptional(true), FunctionWithArgOpts{Description: "Define path to fo file to fetch from the build container"}).
-							WithArg("directoryContainerArtifacts", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind)).WithOptional(true), FunctionWithArgOpts{Description: "Define path to fo directories to fetch from the build container"}).
-							WithArg("registries", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind)), FunctionWithArgOpts{Description: "Define registries where to push the image"}).
-							WithArg("isTtl", dag.TypeDef().WithKind(BooleanKind).WithOptional(true), FunctionWithArgOpts{Description: "Define the ttl registry to use"}).
+						dag.Function("Pipeline",
+							dag.TypeDef().WithKind(StringKind)).
+							WithDescription("Execute the whole pipeline in general used with the function 'with-auto-setup'").
+							WithArg("preHooks", dag.TypeDef().WithListOf(dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind))).WithOptional(true), FunctionWithArgOpts{Description: "Define hooks to execute before all"}).
+							WithArg("postHooks", dag.TypeDef().WithListOf(dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind))).WithOptional(true), FunctionWithArgOpts{Description: "Define hooks to execute after tests and before build"}).
+							WithArg("isOci", dag.TypeDef().WithKind(BooleanKind).WithOptional(true), FunctionWithArgOpts{Description: "Indicate if the artifact is an oci build or not"}).
+							WithArg("dryRun", dag.TypeDef().WithKind(BooleanKind).WithOptional(true), FunctionWithArgOpts{Description: "Indicate to dry run the publishing", DefaultValue: JSON("\"false\"")}).
+							WithArg("packageAccess", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "Define permission on the package in the registry", DefaultValue: JSON("\"true\"")}).
+							WithArg("packageDevTag", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "Indicate if the package is publishing as development version"}).
+							WithArg("fileContainerArtifacts", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind)).WithOptional(true), FunctionWithArgOpts{Description: "Define path to file to fetch from the build container"}).
+							WithArg("directoryContainerArtifacts", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind)).WithOptional(true), FunctionWithArgOpts{Description: "Define path to directories to fetch from the build container"}).
+							WithArg("ociRegistries", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind)).WithOptional(true), FunctionWithArgOpts{Description: "Define registries where to push the image"}).
 							WithArg("ttlRegistry", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "Define the ttl registry to use", DefaultValue: JSON("\"ttl.sh\"")}).
 							WithArg("ttl", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "Define the ttl in the ttl registry", DefaultValue: JSON("\"60m\"")})).
 					WithFunction(
@@ -1421,22 +1447,7 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 							WithArg("image", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "The image name to use", DefaultValue: JSON("\"node\"")}).
 							WithArg("isAlpine", dag.TypeDef().WithKind(BooleanKind).WithOptional(true), FunctionWithArgOpts{Description: "Define if the image to use is an alpine or not", DefaultValue: JSON("\"true\"")}).
 							WithArg("containerPlatform", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "Container options", DefaultValue: JSON("\"linux/amd64\"")}).
-							WithArg("systemSetupCmds", dag.TypeDef().WithListOf(dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind))).WithOptional(true), FunctionWithArgOpts{Description: "Indicate attempted system package to install"})).
-					WithFunction(
-						dag.Function("Pipeline",
-							dag.TypeDef().WithKind(StringKind)).
-							WithDescription("Execute the whole pipeline in general used with the function 'with-auto-setup'").
-							WithArg("preHooks", dag.TypeDef().WithListOf(dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind))).WithOptional(true), FunctionWithArgOpts{Description: "Define hooks to execute before all"}).
-							WithArg("postHooks", dag.TypeDef().WithListOf(dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind))).WithOptional(true), FunctionWithArgOpts{Description: "Define hooks to execute after tests and before build"}).
-							WithArg("isOci", dag.TypeDef().WithKind(BooleanKind).WithOptional(true), FunctionWithArgOpts{Description: "Indicate if the artifact is an oci build or not"}).
-							WithArg("dryRun", dag.TypeDef().WithKind(BooleanKind).WithOptional(true), FunctionWithArgOpts{Description: "Indicate to dry run the publishing", DefaultValue: JSON("\"false\"")}).
-							WithArg("packageAccess", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "Define permission on the package in the registry", DefaultValue: JSON("\"true\"")}).
-							WithArg("packageDevTag", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "Indicate if the package is publishing as development version"}).
-							WithArg("fileContainerArtifacts", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind)).WithOptional(true), FunctionWithArgOpts{Description: "Define path to fo file to fetch from the build container"}).
-							WithArg("directoryContainerArtifacts", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind)).WithOptional(true), FunctionWithArgOpts{Description: "Define path to fo directories to fetch from the build container"}).
-							WithArg("ociRegistries", dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind)).WithOptional(true), FunctionWithArgOpts{Description: "Define registries where to push the image"}).
-							WithArg("ttlRegistry", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "Define the ttl registry to use", DefaultValue: JSON("\"ttl.sh\"")}).
-							WithArg("ttl", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "Define the ttl in the ttl registry", DefaultValue: JSON("\"60m\"")}))), nil
+							WithArg("systemSetupCmds", dag.TypeDef().WithListOf(dag.TypeDef().WithListOf(dag.TypeDef().WithKind(StringKind))).WithOptional(true), FunctionWithArgOpts{Description: "Indicate attempted system package to install"}))), nil
 	default:
 		return nil, fmt.Errorf("unknown object %s", parentName)
 	}

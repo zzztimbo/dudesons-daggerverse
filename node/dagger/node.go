@@ -146,11 +146,11 @@ func (n *Node) WithFile(
 	if persisted {
 		n.Ctr = n.
 			Ctr.
-			WithFile(workdir, file)
+			WithFile(workdir+"/"+path, file)
 	} else {
 		n.Ctr = n.
 			Ctr.
-			WithMountedFile(workdir, file)
+			WithMountedFile(workdir+"/"+path, file)
 	}
 
 	return n
@@ -169,11 +169,11 @@ func (n *Node) WithDirectory(
 	if persisted {
 		n.Ctr = n.
 			Ctr.
-			WithDirectory(workdir, dir)
+			WithDirectory(workdir+"/"+path, dir)
 	} else {
 		n.Ctr = n.
 			Ctr.
-			WithMountedDirectory(workdir, dir)
+			WithMountedDirectory(workdir+"/"+path, dir)
 	}
 
 	return n

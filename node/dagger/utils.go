@@ -5,6 +5,11 @@ func (n *Node) Container() *Container {
 	return n.Ctr
 }
 
+// Return the current working directory
+func (n *Node) Directory() *Directory {
+	return n.Ctr.Directory(workdir)
+}
+
 // Open a shell in the current container or execute a command inside it, like node
 func (n *Node) Shell(
 	// The command to execute in the terminal

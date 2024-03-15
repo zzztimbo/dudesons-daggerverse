@@ -26,4 +26,4 @@ jobs:
           verb: call
           module: ./ci
           args: ${{ matrix.module }} --test-data-src=./testdata/${{ matrix.module }}/
-          #cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
+          cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}

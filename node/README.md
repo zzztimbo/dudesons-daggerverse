@@ -206,3 +206,4 @@ Type ".help" for more information.
 - [ ] Add more package manager
 - [ ] Add the deployment to a bucket for static files or expose the dist folder
 - [ ] Improve documentation
+- [ ] Allow to manage an application user in the case of oci build

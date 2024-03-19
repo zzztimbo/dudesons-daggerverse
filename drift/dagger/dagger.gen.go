@@ -4,9 +4,9 @@ package main
 
 import (
 	"context"
+	"dagger/drift/internal/dagger"
 	"encoding/json"
 	"fmt"
-	"main/internal/dagger"
 	"os"
 )
 
@@ -15,15 +15,6 @@ var dag = dagger.Connect()
 type DaggerObject = dagger.DaggerObject
 
 type ExecError = dagger.ExecError
-
-// The `AutodetectionID` scalar type represents an identifier for an object of type Autodetection.
-type AutodetectionID = dagger.AutodetectionID
-
-// The `AutodetectionNodeAnalyzerID` scalar type represents an identifier for an object of type AutodetectionNodeAnalyzer.
-type AutodetectionNodeAnalyzerID = dagger.AutodetectionNodeAnalyzerID
-
-// The `AutodetectionOciAnalyzerID` scalar type represents an identifier for an object of type AutodetectionOciAnalyzer.
-type AutodetectionOciAnalyzerID = dagger.AutodetectionOciAnalyzerID
 
 // The `CacheVolumeID` scalar type represents an identifier for an object of type CacheVolume.
 type CacheVolumeID = dagger.CacheVolumeID
@@ -97,8 +88,11 @@ type ModuleID = dagger.ModuleID
 // The `ModuleSourceID` scalar type represents an identifier for an object of type ModuleSource.
 type ModuleSourceID = dagger.ModuleSourceID
 
-// The `NodeID` scalar type represents an identifier for an object of type Node.
-type NodeID = dagger.NodeID
+// The `NotifyID` scalar type represents an identifier for an object of type Notify.
+type NotifyID = dagger.NotifyID
+
+// The `NotifySlackID` scalar type represents an identifier for an object of type NotifySlack.
+type NotifySlackID = dagger.NotifySlackID
 
 // The `ObjectTypeDefID` scalar type represents an identifier for an object of type ObjectTypeDef.
 type ObjectTypeDefID = dagger.ObjectTypeDefID
@@ -137,9 +131,6 @@ type TypeDefID = dagger.TypeDefID
 // A Null Void is used as a placeholder for resolvers that do not return anything.
 type Void = dagger.Void
 
-// The `YqID` scalar type represents an identifier for an object of type Yq.
-type YqID = dagger.YqID
-
 // Key value object that represents a build argument.
 type BuildArg = dagger.BuildArg
 
@@ -148,18 +139,6 @@ type PipelineLabel = dagger.PipelineLabel
 
 // Port forwarding rules for tunneling network traffic.
 type PortForward = dagger.PortForward
-
-type Autodetection = dagger.Autodetection
-
-// AutodetectionNodeOpts contains options for Autodetection.Node
-type AutodetectionNodeOpts = dagger.AutodetectionNodeOpts
-
-// AutodetectionOciOpts contains options for Autodetection.Oci
-type AutodetectionOciOpts = dagger.AutodetectionOciOpts
-
-type AutodetectionNodeAnalyzer = dagger.AutodetectionNodeAnalyzer
-
-type AutodetectionOciAnalyzer = dagger.AutodetectionOciAnalyzer
 
 // A directory whose contents persist across runs.
 type CacheVolume = dagger.CacheVolume
@@ -361,54 +340,12 @@ type ModuleSource = dagger.ModuleSource
 
 type WithModuleSourceFunc = dagger.WithModuleSourceFunc
 
-type Node = dagger.Node
+type Notify = dagger.Notify
 
-type WithNodeFunc = dagger.WithNodeFunc
+type NotifySlack = dagger.NotifySlack
 
-// NodeBumpVersionOpts contains options for Node.BumpVersion
-type NodeBumpVersionOpts = dagger.NodeBumpVersionOpts
-
-// NodeOciBuildOpts contains options for Node.OciBuild
-type NodeOciBuildOpts = dagger.NodeOciBuildOpts
-
-// NodePipelineOpts contains options for Node.Pipeline
-type NodePipelineOpts = dagger.NodePipelineOpts
-
-// NodePublishOpts contains options for Node.Publish
-type NodePublishOpts = dagger.NodePublishOpts
-
-// NodeSetupSystemOpts contains options for Node.SetupSystem
-type NodeSetupSystemOpts = dagger.NodeSetupSystemOpts
-
-// NodeShellOpts contains options for Node.Shell
-type NodeShellOpts = dagger.NodeShellOpts
-
-// NodeWithAutoSetupOpts contains options for Node.WithAutoSetup
-type NodeWithAutoSetupOpts = dagger.NodeWithAutoSetupOpts
-
-// NodeWithCacheOpts contains options for Node.WithCache
-type NodeWithCacheOpts = dagger.NodeWithCacheOpts
-
-// NodeWithDirectoryOpts contains options for Node.WithDirectory
-type NodeWithDirectoryOpts = dagger.NodeWithDirectoryOpts
-
-// NodeWithFileOpts contains options for Node.WithFile
-type NodeWithFileOpts = dagger.NodeWithFileOpts
-
-// NodeWithNpmOpts contains options for Node.WithNpm
-type NodeWithNpmOpts = dagger.NodeWithNpmOpts
-
-// NodeWithPackageManagerOpts contains options for Node.WithPackageManager
-type NodeWithPackageManagerOpts = dagger.NodeWithPackageManagerOpts
-
-// NodeWithSourceOpts contains options for Node.WithSource
-type NodeWithSourceOpts = dagger.NodeWithSourceOpts
-
-// NodeWithVersionOpts contains options for Node.WithVersion
-type NodeWithVersionOpts = dagger.NodeWithVersionOpts
-
-// NodeWithYarnOpts contains options for Node.WithYarn
-type NodeWithYarnOpts = dagger.NodeWithYarnOpts
+// NotifySlackSendMessageOpts contains options for NotifySlack.SendMessage
+type NotifySlackSendMessageOpts = dagger.NotifySlackSendMessageOpts
 
 // A definition of a custom object defined in a Module.
 type ObjectTypeDef = dagger.ObjectTypeDef
@@ -444,9 +381,6 @@ type PipelineOpts = dagger.PipelineOpts
 
 // SecretOpts contains options for Client.Secret
 type SecretOpts = dagger.SecretOpts
-
-// YqOpts contains options for Client.Yq
-type YqOpts = dagger.YqOpts
 
 // A reference to a secret value, which can be handled more safely than the value itself.
 type Secret = dagger.Secret
@@ -500,10 +434,6 @@ type TypeDefWithInterfaceOpts = dagger.TypeDefWithInterfaceOpts
 
 // TypeDefWithObjectOpts contains options for TypeDef.WithObject
 type TypeDefWithObjectOpts = dagger.TypeDefWithObjectOpts
-
-type Yq = dagger.Yq
-
-type WithYqFunc = dagger.WithYqFunc
 
 // Sharing mode of the cache volume.
 type CacheSharingMode = dagger.CacheSharingMode
@@ -611,17 +541,47 @@ func convertSlice[I any, O any](in []I, f func(I) O) []O {
 	return out
 }
 
-func (r Ci) MarshalJSON() ([]byte, error) {
-	var concrete struct{}
+func (r Drift) MarshalJSON() ([]byte, error) {
+	var concrete struct {
+		Reports        []string
+		StartTime      string
+		Endtime        string
+		StackLen       int
+		DriftLen       int
+		RootStacksPath string
+		MountPoint     string
+	}
+	concrete.Reports = r.Reports
+	concrete.StartTime = r.StartTime
+	concrete.Endtime = r.Endtime
+	concrete.StackLen = r.StackLen
+	concrete.DriftLen = r.DriftLen
+	concrete.RootStacksPath = r.RootStacksPath
+	concrete.MountPoint = r.MountPoint
 	return json.Marshal(&concrete)
 }
 
-func (r *Ci) UnmarshalJSON(bs []byte) error {
-	var concrete struct{}
+func (r *Drift) UnmarshalJSON(bs []byte) error {
+	var concrete struct {
+		Reports        []string
+		StartTime      string
+		Endtime        string
+		StackLen       int
+		DriftLen       int
+		RootStacksPath string
+		MountPoint     string
+	}
 	err := json.Unmarshal(bs, &concrete)
 	if err != nil {
 		return err
 	}
+	r.Reports = concrete.Reports
+	r.StartTime = concrete.StartTime
+	r.Endtime = concrete.Endtime
+	r.StackLen = concrete.StackLen
+	r.DriftLen = concrete.DriftLen
+	r.RootStacksPath = concrete.RootStacksPath
+	r.MountPoint = concrete.MountPoint
 	return nil
 }
 
@@ -684,88 +644,111 @@ func main() {
 
 func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName string, inputArgs map[string][]byte) (_ any, err error) {
 	switch parentName {
-	case "Ci":
+	case "Drift":
 		switch fnName {
-		case "Yq":
-			var parent Ci
+		case "ReportToSlack":
+			var parent Drift
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var testDataSrc *Directory
-			if inputArgs["testDataSrc"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["testDataSrc"]), &testDataSrc)
+			var token *Secret
+			if inputArgs["token"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["token"]), &token)
 				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg testDataSrc", err))
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg token", err))
 				}
 			}
-			return nil, (*Ci).Yq(&parent, ctx, testDataSrc)
-		case "Autodetection":
-			var parent Ci
+			var channelId string
+			if inputArgs["channelId"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["channelId"]), &channelId)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg channelId", err))
+				}
+			}
+			var color string
+			if inputArgs["color"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["color"]), &color)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg color", err))
+				}
+			}
+			return nil, (*Drift).ReportToSlack(&parent, ctx, token, channelId, color)
+		case "Detection":
+			var parent Drift
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var testDataSrc *Directory
-			if inputArgs["testDataSrc"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["testDataSrc"]), &testDataSrc)
+			var src *Directory
+			if inputArgs["src"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["src"]), &src)
 				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg testDataSrc", err))
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
 				}
 			}
-			return nil, (*Ci).Autodetection(&parent, ctx, testDataSrc)
-		case "Node":
-			var parent Ci
+			var stackRootPath string
+			if inputArgs["stackRootPath"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["stackRootPath"]), &stackRootPath)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg stackRootPath", err))
+				}
+			}
+			var maxParallelization int
+			if inputArgs["maxParallelization"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["maxParallelization"]), &maxParallelization)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg maxParallelization", err))
+				}
+			}
+			var cacheBursterLevel string
+			if inputArgs["cacheBursterLevel"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["cacheBursterLevel"]), &cacheBursterLevel)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg cacheBursterLevel", err))
+				}
+			}
+			return (*Drift).Detection(&parent, ctx, src, stackRootPath, maxParallelization, cacheBursterLevel)
+		case "":
+			var parent Drift
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var testDataSrc *Directory
-			if inputArgs["testDataSrc"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["testDataSrc"]), &testDataSrc)
+			var mountPoint string
+			if inputArgs["mountPoint"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["mountPoint"]), &mountPoint)
 				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg testDataSrc", err))
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg mountPoint", err))
 				}
 			}
-			return nil, (*Ci).Node(&parent, ctx, testDataSrc)
-		case "Terrabox":
-			var parent Ci
-			err = json.Unmarshal(parentJSON, &parent)
-			if err != nil {
-				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
-			}
-			var testDataSrc *Directory
-			if inputArgs["testDataSrc"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["testDataSrc"]), &testDataSrc)
-				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg testDataSrc", err))
-				}
-			}
-			return nil, (*Ci).Terrabox(&parent, ctx, testDataSrc)
+			return New(mountPoint), nil
 		default:
 			return nil, fmt.Errorf("unknown function %s", fnName)
 		}
 	case "":
 		return dag.Module().
-			WithDescription("A generated module for Ci functions\n\nThis module has been generated via dagger init and serves as a reference to\nbasic module structure as you get started with Dagger.\n\nTwo functions have been pre-created. You can modify, delete, or add to them,\nas needed. They demonstrate usage of arguments and return types using simple\necho and grep commands. The functions can be called from the dagger CLI or\nfrom one of the SDKs.\n\nThe first line in this comment block is a short description line and the\nrest is a long description with more detail on the module's purpose or usage,\nif appropriate. All modules should have a short description.\n").
+			WithDescription("A Drift detection module around terraform/terragrunt which allow to send a report\n").
 			WithObject(
-				dag.TypeDef().WithObject("Ci").
+				dag.TypeDef().WithObject("Drift").
 					WithFunction(
-						dag.Function("Yq",
+						dag.Function("ReportToSlack",
 							dag.TypeDef().WithKind(VoidKind).WithOptional(true)).
-							WithArg("testDataSrc", dag.TypeDef().WithObject("Directory"))).
+							WithArg("token", dag.TypeDef().WithObject("Secret")).
+							WithArg("channelId", dag.TypeDef().WithKind(StringKind)).
+							WithArg("color", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "blabla", DefaultValue: JSON("\"#9512a6\"")})).
 					WithFunction(
-						dag.Function("Autodetection",
-							dag.TypeDef().WithKind(VoidKind).WithOptional(true)).
-							WithArg("testDataSrc", dag.TypeDef().WithObject("Directory"))).
-					WithFunction(
-						dag.Function("Node",
-							dag.TypeDef().WithKind(VoidKind).WithOptional(true)).
-							WithArg("testDataSrc", dag.TypeDef().WithObject("Directory"))).
-					WithFunction(
-						dag.Function("Terrabox",
-							dag.TypeDef().WithKind(VoidKind).WithOptional(true)).
-							WithArg("testDataSrc", dag.TypeDef().WithObject("Directory")))), nil
+						dag.Function("Detection",
+							dag.TypeDef().WithObject("Drift")).
+							WithDescription("Trigger the drift detection").
+							WithArg("src", dag.TypeDef().WithObject("Directory"), FunctionWithArgOpts{Description: "All the terraform/terragrunt code necessary in order to be able to run plan"}).
+							WithArg("stackRootPath", dag.TypeDef().WithKind(StringKind), FunctionWithArgOpts{Description: "The root path where stack are living"}).
+							WithArg("maxParallelization", dag.TypeDef().WithKind(IntegerKind), FunctionWithArgOpts{Description: "The number of execution in parallel we want to have, 0 mean no limit"}).
+							WithArg("cacheBursterLevel", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "Define if the cache burster level is done per day (daily), per hour (hour), per minute (minute), per second (default)", DefaultValue: JSON("\"hour\"")})).
+					WithConstructor(
+						dag.Function("New",
+							dag.TypeDef().WithObject("Drift")).
+							WithArg("mountPoint", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "Define where the code is mounted, this could impact for absolute module path", DefaultValue: JSON("\"/terraform\"")}))), nil
 	default:
 		return nil, fmt.Errorf("unknown object %s", parentName)
 	}

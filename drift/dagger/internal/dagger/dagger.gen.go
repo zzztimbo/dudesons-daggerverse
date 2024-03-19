@@ -17,7 +17,7 @@ import (
 	"github.com/Khan/genqlient/graphql"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 
-	"main/internal/querybuilder"
+	"dagger/drift/internal/querybuilder"
 )
 
 // assertNotNil panic if the given value is nil.
@@ -105,15 +105,6 @@ func (e *ExecError) Unwrap() error {
 	return e.original
 }
 
-// The `AutodetectionID` scalar type represents an identifier for an object of type Autodetection.
-type AutodetectionID string
-
-// The `AutodetectionNodeAnalyzerID` scalar type represents an identifier for an object of type AutodetectionNodeAnalyzer.
-type AutodetectionNodeAnalyzerID string
-
-// The `AutodetectionOciAnalyzerID` scalar type represents an identifier for an object of type AutodetectionOciAnalyzer.
-type AutodetectionOciAnalyzerID string
-
 // The `CacheVolumeID` scalar type represents an identifier for an object of type CacheVolume.
 type CacheVolumeID string
 
@@ -186,8 +177,11 @@ type ModuleID string
 // The `ModuleSourceID` scalar type represents an identifier for an object of type ModuleSource.
 type ModuleSourceID string
 
-// The `NodeID` scalar type represents an identifier for an object of type Node.
-type NodeID string
+// The `NotifyID` scalar type represents an identifier for an object of type Notify.
+type NotifyID string
+
+// The `NotifySlackID` scalar type represents an identifier for an object of type NotifySlack.
+type NotifySlackID string
 
 // The `ObjectTypeDefID` scalar type represents an identifier for an object of type ObjectTypeDef.
 type ObjectTypeDefID string
@@ -226,9 +220,6 @@ type TypeDefID string
 // A Null Void is used as a placeholder for resolvers that do not return anything.
 type Void string
 
-// The `YqID` scalar type represents an identifier for an object of type Yq.
-type YqID string
-
 // Key value object that represents a build argument.
 type BuildArg struct {
 	// The build argument name.
@@ -257,397 +248,6 @@ type PortForward struct {
 
 	// Transport layer protocol to use for traffic.
 	Protocol NetworkProtocol `json:"protocol,omitempty"`
-}
-
-type Autodetection struct {
-	query *querybuilder.Selection
-
-	id *AutodetectionID
-}
-
-func (r *Autodetection) WithGraphQLQuery(q *querybuilder.Selection) *Autodetection {
-	return &Autodetection{
-		query: q,
-	}
-}
-
-// A unique identifier for this Autodetection.
-func (r *Autodetection) ID(ctx context.Context) (AutodetectionID, error) {
-	if r.id != nil {
-		return *r.id, nil
-	}
-	q := r.query.Select("id")
-
-	var response AutodetectionID
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
-func (r *Autodetection) XXX_GraphQLType() string {
-	return "Autodetection"
-}
-
-// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
-func (r *Autodetection) XXX_GraphQLIDType() string {
-	return "AutodetectionID"
-}
-
-// XXX_GraphQLID is an internal function. It returns the underlying type ID
-func (r *Autodetection) XXX_GraphQLID(ctx context.Context) (string, error) {
-	id, err := r.ID(ctx)
-	if err != nil {
-		return "", err
-	}
-	return string(id), nil
-}
-
-func (r *Autodetection) MarshalJSON() ([]byte, error) {
-	id, err := r.ID(context.Background())
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(id)
-}
-func (r *Autodetection) UnmarshalJSON(bs []byte) error {
-	var id string
-	err := json.Unmarshal(bs, &id)
-	if err != nil {
-		return err
-	}
-	*r = *dag.LoadAutodetectionFromID(AutodetectionID(id))
-	return nil
-}
-
-// AutodetectionNodeOpts contains options for Autodetection.Node
-type AutodetectionNodeOpts struct {
-	//
-	// Define patterns to exclude from the analysis
-	//
-	PatternExclusions []string
-}
-
-// Expose node auto dection runtime information
-func (r *Autodetection) Node(src *Directory, opts ...AutodetectionNodeOpts) *AutodetectionNodeAnalyzer {
-	assertNotNil("src", src)
-	q := r.query.Select("node")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `patternExclusions` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PatternExclusions) {
-			q = q.Arg("patternExclusions", opts[i].PatternExclusions)
-		}
-	}
-	q = q.Arg("src", src)
-
-	return &AutodetectionNodeAnalyzer{
-		query: q,
-	}
-}
-
-// AutodetectionOciOpts contains options for Autodetection.Oci
-type AutodetectionOciOpts struct {
-	//
-	// Define patterns to exclude from the analysis
-	//
-	PatternExclusions []string
-}
-
-// Expose OCI dection runtime information
-func (r *Autodetection) Oci(src *Directory, opts ...AutodetectionOciOpts) *AutodetectionOciAnalyzer {
-	assertNotNil("src", src)
-	q := r.query.Select("oci")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `patternExclusions` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PatternExclusions) {
-			q = q.Arg("patternExclusions", opts[i].PatternExclusions)
-		}
-	}
-	q = q.Arg("src", src)
-
-	return &AutodetectionOciAnalyzer{
-		query: q,
-	}
-}
-
-type AutodetectionNodeAnalyzer struct {
-	query *querybuilder.Selection
-
-	getEngineVersion *string
-	getName          *string
-	getVersion       *string
-	id               *AutodetectionNodeAnalyzerID
-	is               *bool
-	isNpm            *bool
-	isPackage        *bool
-	isTest           *bool
-	isYarn           *bool
-	pkgJsonRep       *string
-}
-
-func (r *AutodetectionNodeAnalyzer) WithGraphQLQuery(q *querybuilder.Selection) *AutodetectionNodeAnalyzer {
-	return &AutodetectionNodeAnalyzer{
-		query: q,
-	}
-}
-
-func (r *AutodetectionNodeAnalyzer) GetEngineVersion(ctx context.Context) (string, error) {
-	if r.getEngineVersion != nil {
-		return *r.getEngineVersion, nil
-	}
-	q := r.query.Select("getEngineVersion")
-
-	var response string
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-func (r *AutodetectionNodeAnalyzer) GetName(ctx context.Context) (string, error) {
-	if r.getName != nil {
-		return *r.getName, nil
-	}
-	q := r.query.Select("getName")
-
-	var response string
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-func (r *AutodetectionNodeAnalyzer) GetScriptNames(ctx context.Context) ([]string, error) {
-	q := r.query.Select("getScriptNames")
-
-	var response []string
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-func (r *AutodetectionNodeAnalyzer) GetVersion(ctx context.Context) (string, error) {
-	if r.getVersion != nil {
-		return *r.getVersion, nil
-	}
-	q := r.query.Select("getVersion")
-
-	var response string
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-// A unique identifier for this AutodetectionNodeAnalyzer.
-func (r *AutodetectionNodeAnalyzer) ID(ctx context.Context) (AutodetectionNodeAnalyzerID, error) {
-	if r.id != nil {
-		return *r.id, nil
-	}
-	q := r.query.Select("id")
-
-	var response AutodetectionNodeAnalyzerID
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
-func (r *AutodetectionNodeAnalyzer) XXX_GraphQLType() string {
-	return "AutodetectionNodeAnalyzer"
-}
-
-// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
-func (r *AutodetectionNodeAnalyzer) XXX_GraphQLIDType() string {
-	return "AutodetectionNodeAnalyzerID"
-}
-
-// XXX_GraphQLID is an internal function. It returns the underlying type ID
-func (r *AutodetectionNodeAnalyzer) XXX_GraphQLID(ctx context.Context) (string, error) {
-	id, err := r.ID(ctx)
-	if err != nil {
-		return "", err
-	}
-	return string(id), nil
-}
-
-func (r *AutodetectionNodeAnalyzer) MarshalJSON() ([]byte, error) {
-	id, err := r.ID(context.Background())
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(id)
-}
-func (r *AutodetectionNodeAnalyzer) UnmarshalJSON(bs []byte) error {
-	var id string
-	err := json.Unmarshal(bs, &id)
-	if err != nil {
-		return err
-	}
-	*r = *dag.LoadAutodetectionNodeAnalyzerFromID(AutodetectionNodeAnalyzerID(id))
-	return nil
-}
-
-func (r *AutodetectionNodeAnalyzer) Is(ctx context.Context, scriptName string) (bool, error) {
-	if r.is != nil {
-		return *r.is, nil
-	}
-	q := r.query.Select("is")
-	q = q.Arg("scriptName", scriptName)
-
-	var response bool
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-func (r *AutodetectionNodeAnalyzer) IsNpm(ctx context.Context) (bool, error) {
-	if r.isNpm != nil {
-		return *r.isNpm, nil
-	}
-	q := r.query.Select("isNpm")
-
-	var response bool
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-func (r *AutodetectionNodeAnalyzer) IsPackage(ctx context.Context) (bool, error) {
-	if r.isPackage != nil {
-		return *r.isPackage, nil
-	}
-	q := r.query.Select("isPackage")
-
-	var response bool
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-func (r *AutodetectionNodeAnalyzer) IsTest(ctx context.Context) (bool, error) {
-	if r.isTest != nil {
-		return *r.isTest, nil
-	}
-	q := r.query.Select("isTest")
-
-	var response bool
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-func (r *AutodetectionNodeAnalyzer) IsYarn(ctx context.Context) (bool, error) {
-	if r.isYarn != nil {
-		return *r.isYarn, nil
-	}
-	q := r.query.Select("isYarn")
-
-	var response bool
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-func (r *AutodetectionNodeAnalyzer) Matches(ctx context.Context) ([]string, error) {
-	q := r.query.Select("matches")
-
-	var response []string
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-func (r *AutodetectionNodeAnalyzer) PkgJSONRep(ctx context.Context) (string, error) {
-	if r.pkgJsonRep != nil {
-		return *r.pkgJsonRep, nil
-	}
-	q := r.query.Select("pkgJsonRep")
-
-	var response string
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-type AutodetectionOciAnalyzer struct {
-	query *querybuilder.Selection
-
-	id    *AutodetectionOciAnalyzerID
-	isOci *bool
-}
-
-func (r *AutodetectionOciAnalyzer) WithGraphQLQuery(q *querybuilder.Selection) *AutodetectionOciAnalyzer {
-	return &AutodetectionOciAnalyzer{
-		query: q,
-	}
-}
-
-// A unique identifier for this AutodetectionOciAnalyzer.
-func (r *AutodetectionOciAnalyzer) ID(ctx context.Context) (AutodetectionOciAnalyzerID, error) {
-	if r.id != nil {
-		return *r.id, nil
-	}
-	q := r.query.Select("id")
-
-	var response AutodetectionOciAnalyzerID
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
-func (r *AutodetectionOciAnalyzer) XXX_GraphQLType() string {
-	return "AutodetectionOciAnalyzer"
-}
-
-// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
-func (r *AutodetectionOciAnalyzer) XXX_GraphQLIDType() string {
-	return "AutodetectionOciAnalyzerID"
-}
-
-// XXX_GraphQLID is an internal function. It returns the underlying type ID
-func (r *AutodetectionOciAnalyzer) XXX_GraphQLID(ctx context.Context) (string, error) {
-	id, err := r.ID(ctx)
-	if err != nil {
-		return "", err
-	}
-	return string(id), nil
-}
-
-func (r *AutodetectionOciAnalyzer) MarshalJSON() ([]byte, error) {
-	id, err := r.ID(context.Background())
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(id)
-}
-func (r *AutodetectionOciAnalyzer) UnmarshalJSON(bs []byte) error {
-	var id string
-	err := json.Unmarshal(bs, &id)
-	if err != nil {
-		return err
-	}
-	*r = *dag.LoadAutodetectionOciAnalyzerFromID(AutodetectionOciAnalyzerID(id))
-	return nil
-}
-
-func (r *AutodetectionOciAnalyzer) IsOci(ctx context.Context) (bool, error) {
-	if r.isOci != nil {
-		return *r.isOci, nil
-	}
-	q := r.query.Select("isOci")
-
-	var response bool
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-func (r *AutodetectionOciAnalyzer) Matches(ctx context.Context) ([]string, error) {
-	q := r.query.Select("matches")
-
-	var response []string
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
 }
 
 // A directory whose contents persist across runs.
@@ -5259,95 +4859,28 @@ func (r *ModuleSource) WithSourceSubpath(path string) *ModuleSource {
 	}
 }
 
-type Node struct {
+type Notify struct {
 	query *querybuilder.Selection
 
-	do           *string
-	id           *NodeID
-	parallelTest *Void
-	pipeline     *string
-}
-type WithNodeFunc func(r *Node) *Node
-
-// With calls the provided function with current Node.
-//
-// This is useful for reusability and readability by not breaking the calling chain.
-func (r *Node) With(f WithNodeFunc) *Node {
-	return f(r)
+	discord *string
+	id      *NotifyID
 }
 
-func (r *Node) WithGraphQLQuery(q *querybuilder.Selection) *Node {
-	return &Node{
+func (r *Notify) WithGraphQLQuery(q *querybuilder.Selection) *Notify {
+	return &Notify{
 		query: q,
 	}
 }
 
-// Execute the build command
-func (r *Node) Build() *Node {
-	q := r.query.Select("build")
-
-	return &Node{
-		query: q,
+// EXAMPLE: dagger call discord --webhook-url env:DISCORD_WEBHOOK --message "Hi from Dagger Notify Module 👋 Learn more at https://github.com/gerhard/daggerverse"
+func (r *Notify) Discord(ctx context.Context, webhookUrl *Secret, message string) (string, error) {
+	assertNotNil("webhookUrl", webhookUrl)
+	if r.discord != nil {
+		return *r.discord, nil
 	}
-}
-
-// NodeBumpVersionOpts contains options for Node.BumpVersion
-type NodeBumpVersionOpts struct {
-	//
-	// The message will use it as a commit message when creating a version commit. If the message config contains %!s(MISSING) then that will be replaced with the resulting version number
-	//
-	Message string
-}
-
-// Bump the package version
-func (r *Node) BumpVersion(strategy string, opts ...NodeBumpVersionOpts) *Node {
-	q := r.query.Select("bumpVersion")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `message` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Message) {
-			q = q.Arg("message", opts[i].Message)
-		}
-	}
-	q = q.Arg("strategy", strategy)
-
-	return &Node{
-		query: q,
-	}
-}
-
-// Execute clean command
-func (r *Node) Clean() *Node {
-	q := r.query.Select("clean")
-
-	return &Node{
-		query: q,
-	}
-}
-
-// Return the current container state
-func (r *Node) Container() *Container {
-	q := r.query.Select("container")
-
-	return &Container{
-		query: q,
-	}
-}
-
-// Return the current working directory
-func (r *Node) Directory() *Directory {
-	q := r.query.Select("directory")
-
-	return &Directory{
-		query: q,
-	}
-}
-
-// Execute all commands
-func (r *Node) Do(ctx context.Context) (string, error) {
-	if r.do != nil {
-		return *r.do, nil
-	}
-	q := r.query.Select("do")
+	q := r.query.Select("discord")
+	q = q.Arg("webhookUrl", webhookUrl)
+	q = q.Arg("message", message)
 
 	var response string
 
@@ -5355,31 +4888,31 @@ func (r *Node) Do(ctx context.Context) (string, error) {
 	return response, q.Execute(ctx)
 }
 
-// A unique identifier for this Node.
-func (r *Node) ID(ctx context.Context) (NodeID, error) {
+// A unique identifier for this Notify.
+func (r *Notify) ID(ctx context.Context) (NotifyID, error) {
 	if r.id != nil {
 		return *r.id, nil
 	}
 	q := r.query.Select("id")
 
-	var response NodeID
+	var response NotifyID
 
 	q = q.Bind(&response)
 	return response, q.Execute(ctx)
 }
 
 // XXX_GraphQLType is an internal function. It returns the native GraphQL type name
-func (r *Node) XXX_GraphQLType() string {
-	return "Node"
+func (r *Notify) XXX_GraphQLType() string {
+	return "Notify"
 }
 
 // XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
-func (r *Node) XXX_GraphQLIDType() string {
-	return "NodeID"
+func (r *Notify) XXX_GraphQLIDType() string {
+	return "NotifyID"
 }
 
 // XXX_GraphQLID is an internal function. It returns the underlying type ID
-func (r *Node) XXX_GraphQLID(ctx context.Context) (string, error) {
+func (r *Notify) XXX_GraphQLID(ctx context.Context) (string, error) {
 	id, err := r.ID(ctx)
 	if err != nil {
 		return "", err
@@ -5387,635 +4920,156 @@ func (r *Node) XXX_GraphQLID(ctx context.Context) (string, error) {
 	return string(id), nil
 }
 
-func (r *Node) MarshalJSON() ([]byte, error) {
+func (r *Notify) MarshalJSON() ([]byte, error) {
 	id, err := r.ID(context.Background())
 	if err != nil {
 		return nil, err
 	}
 	return json.Marshal(id)
 }
-func (r *Node) UnmarshalJSON(bs []byte) error {
+func (r *Notify) UnmarshalJSON(bs []byte) error {
 	var id string
 	err := json.Unmarshal(bs, &id)
 	if err != nil {
 		return err
 	}
-	*r = *dag.LoadNodeFromID(NodeID(id))
+	*r = *dag.LoadNotifyFromID(NotifyID(id))
 	return nil
 }
 
-// Install node modules
-func (r *Node) Install() *Node {
-	q := r.query.Select("install")
+// Allow to send message on slack
+func (r *Notify) Slack() *NotifySlack {
+	q := r.query.Select("slack")
 
-	return &Node{
+	return &NotifySlack{
 		query: q,
 	}
 }
 
-// Execute lint command
-func (r *Node) Lint() *Node {
-	q := r.query.Select("lint")
+type NotifySlack struct {
+	query *querybuilder.Selection
 
-	return &Node{
+	id          *NotifySlackID
+	sendMessage *string
+}
+
+func (r *NotifySlack) WithGraphQLQuery(q *querybuilder.Selection) *NotifySlack {
+	return &NotifySlack{
 		query: q,
 	}
 }
 
-// NodeOciBuildOpts contains options for Node.OciBuild
-type NodeOciBuildOpts struct {
-	//
-	// Define path to fo file to fetch from the build container
-	//
-	FileContainerArtifacts []string
-	//
-	// Define path to fo directories to fetch from the build container
-	//
-	DirectoryContainerArtifacts []string
-	//
-	// Define the ttl registry to use
-	//
-	IsTTL bool
-	//
-	// Define the ttl registry to use
-	//
-	TTLRegistry string
-	//
-	// Define the ttl in the ttl registry
-	//
-	TTL string
-}
-
-// Build a production image and push to one or more registries
-func (r *Node) OciBuild(ctx context.Context, registries []string, opts ...NodeOciBuildOpts) ([]string, error) {
-	q := r.query.Select("ociBuild")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `fileContainerArtifacts` optional argument
-		if !querybuilder.IsZeroValue(opts[i].FileContainerArtifacts) {
-			q = q.Arg("fileContainerArtifacts", opts[i].FileContainerArtifacts)
-		}
-		// `directoryContainerArtifacts` optional argument
-		if !querybuilder.IsZeroValue(opts[i].DirectoryContainerArtifacts) {
-			q = q.Arg("directoryContainerArtifacts", opts[i].DirectoryContainerArtifacts)
-		}
-		// `isTtl` optional argument
-		if !querybuilder.IsZeroValue(opts[i].IsTTL) {
-			q = q.Arg("isTtl", opts[i].IsTTL)
-		}
-		// `ttlRegistry` optional argument
-		if !querybuilder.IsZeroValue(opts[i].TTLRegistry) {
-			q = q.Arg("ttlRegistry", opts[i].TTLRegistry)
-		}
-		// `ttl` optional argument
-		if !querybuilder.IsZeroValue(opts[i].TTL) {
-			q = q.Arg("ttl", opts[i].TTL)
-		}
+// A unique identifier for this NotifySlack.
+func (r *NotifySlack) ID(ctx context.Context) (NotifySlackID, error) {
+	if r.id != nil {
+		return *r.id, nil
 	}
-	q = q.Arg("registries", registries)
+	q := r.query.Select("id")
 
-	var response []string
+	var response NotifySlackID
 
 	q = q.Bind(&response)
 	return response, q.Execute(ctx)
 }
 
-// Execute test commands in parallel
-func (r *Node) ParallelTest(ctx context.Context, cmds [][]string) (Void, error) {
-	if r.parallelTest != nil {
-		return *r.parallelTest, nil
-	}
-	q := r.query.Select("parallelTest")
-	q = q.Arg("cmds", cmds)
-
-	var response Void
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
+// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
+func (r *NotifySlack) XXX_GraphQLType() string {
+	return "NotifySlack"
 }
 
-// NodePipelineOpts contains options for Node.Pipeline
-type NodePipelineOpts struct {
-	//
-	// Define hooks to execute before all
-	//
-	PreHooks [][]string
-	//
-	// Define hooks to execute after tests and before build
-	//
-	PostHooks [][]string
-	//
-	// Indicate if the artifact is an oci build or not
-	//
-	IsOci bool
-	//
-	// Indicate to dry run the publishing
-	//
-	DryRun bool
-	//
-	// Define permission on the package in the registry
-	//
-	PackageAccess string
-	//
-	// Indicate if the package is publishing as development version
-	//
-	PackageDevTag string
-	//
-	// Define path to file to fetch from the build container
-	//
-	FileContainerArtifacts []string
-	//
-	// Define path to directories to fetch from the build container
-	//
-	DirectoryContainerArtifacts []string
-	//
-	// Define registries where to push the image
-	//
-	OciRegistries []string
-	//
-	// Define the ttl registry to use
-	//
-	TTLRegistry string
-	//
-	// Define the ttl in the ttl registry
-	//
-	TTL string
+// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
+func (r *NotifySlack) XXX_GraphQLIDType() string {
+	return "NotifySlackID"
 }
 
-// Execute the whole pipeline in general used with the function 'with-auto-setup'
-func (r *Node) Pipeline(ctx context.Context, opts ...NodePipelineOpts) (string, error) {
-	if r.pipeline != nil {
-		return *r.pipeline, nil
+// XXX_GraphQLID is an internal function. It returns the underlying type ID
+func (r *NotifySlack) XXX_GraphQLID(ctx context.Context) (string, error) {
+	id, err := r.ID(ctx)
+	if err != nil {
+		return "", err
 	}
-	q := r.query.Select("pipeline")
+	return string(id), nil
+}
+
+func (r *NotifySlack) MarshalJSON() ([]byte, error) {
+	id, err := r.ID(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(id)
+}
+func (r *NotifySlack) UnmarshalJSON(bs []byte) error {
+	var id string
+	err := json.Unmarshal(bs, &id)
+	if err != nil {
+		return err
+	}
+	*r = *dag.LoadNotifySlackFromID(NotifySlackID(id))
+	return nil
+}
+
+// NotifySlackSendMessageOpts contains options for NotifySlack.SendMessage
+type NotifySlackSendMessageOpts struct {
+	//
+	// Set a title to the message
+	//
+	Title string
+	//
+	// Set a footer to the message
+	//
+	Footer string
+	//
+	// Set an icon in the footer, the icon should be a link
+	//
+	FooterIcon string
+	//
+	// Add an image in the message
+	//
+	ImageURL string
+	//
+	// The thread id if we want to reply to a message or in a thread
+	//
+	ThreadID string
+}
+
+// Send a message to a specific slack channel or reply in a thread
+func (r *NotifySlack) SendMessage(ctx context.Context, token *Secret, color string, message string, channelId string, opts ...NotifySlackSendMessageOpts) (string, error) {
+	assertNotNil("token", token)
+	if r.sendMessage != nil {
+		return *r.sendMessage, nil
+	}
+	q := r.query.Select("sendMessage")
 	for i := len(opts) - 1; i >= 0; i-- {
-		// `preHooks` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PreHooks) {
-			q = q.Arg("preHooks", opts[i].PreHooks)
+		// `title` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Title) {
+			q = q.Arg("title", opts[i].Title)
 		}
-		// `postHooks` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PostHooks) {
-			q = q.Arg("postHooks", opts[i].PostHooks)
+		// `footer` optional argument
+		if !querybuilder.IsZeroValue(opts[i].Footer) {
+			q = q.Arg("footer", opts[i].Footer)
 		}
-		// `isOci` optional argument
-		if !querybuilder.IsZeroValue(opts[i].IsOci) {
-			q = q.Arg("isOci", opts[i].IsOci)
+		// `footerIcon` optional argument
+		if !querybuilder.IsZeroValue(opts[i].FooterIcon) {
+			q = q.Arg("footerIcon", opts[i].FooterIcon)
 		}
-		// `dryRun` optional argument
-		if !querybuilder.IsZeroValue(opts[i].DryRun) {
-			q = q.Arg("dryRun", opts[i].DryRun)
+		// `imageUrl` optional argument
+		if !querybuilder.IsZeroValue(opts[i].ImageURL) {
+			q = q.Arg("imageUrl", opts[i].ImageURL)
 		}
-		// `packageAccess` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PackageAccess) {
-			q = q.Arg("packageAccess", opts[i].PackageAccess)
-		}
-		// `packageDevTag` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PackageDevTag) {
-			q = q.Arg("packageDevTag", opts[i].PackageDevTag)
-		}
-		// `fileContainerArtifacts` optional argument
-		if !querybuilder.IsZeroValue(opts[i].FileContainerArtifacts) {
-			q = q.Arg("fileContainerArtifacts", opts[i].FileContainerArtifacts)
-		}
-		// `directoryContainerArtifacts` optional argument
-		if !querybuilder.IsZeroValue(opts[i].DirectoryContainerArtifacts) {
-			q = q.Arg("directoryContainerArtifacts", opts[i].DirectoryContainerArtifacts)
-		}
-		// `ociRegistries` optional argument
-		if !querybuilder.IsZeroValue(opts[i].OciRegistries) {
-			q = q.Arg("ociRegistries", opts[i].OciRegistries)
-		}
-		// `ttlRegistry` optional argument
-		if !querybuilder.IsZeroValue(opts[i].TTLRegistry) {
-			q = q.Arg("ttlRegistry", opts[i].TTLRegistry)
-		}
-		// `ttl` optional argument
-		if !querybuilder.IsZeroValue(opts[i].TTL) {
-			q = q.Arg("ttl", opts[i].TTL)
+		// `threadId` optional argument
+		if !querybuilder.IsZeroValue(opts[i].ThreadID) {
+			q = q.Arg("threadId", opts[i].ThreadID)
 		}
 	}
+	q = q.Arg("token", token)
+	q = q.Arg("color", color)
+	q = q.Arg("message", message)
+	q = q.Arg("channelId", channelId)
 
 	var response string
 
 	q = q.Bind(&response)
 	return response, q.Execute(ctx)
-}
-
-// Return a node container with the 'NODE_ENV' set to production
-func (r *Node) Production() *Node {
-	q := r.query.Select("production")
-
-	return &Node{
-		query: q,
-	}
-}
-
-// NodePublishOpts contains options for Node.Publish
-type NodePublishOpts struct {
-	//
-	// Define permission on the package in the registry
-	//
-	Access string
-	//
-	// Indicate if the package is publishing as development version
-	//
-	DevTag string
-	//
-	// Indicate to dry run the publishing
-	//
-	DryRun bool
-}
-
-// Execute the publish which push a package to a registry
-func (r *Node) Publish(opts ...NodePublishOpts) *Node {
-	q := r.query.Select("publish")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `access` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Access) {
-			q = q.Arg("access", opts[i].Access)
-		}
-		// `devTag` optional argument
-		if !querybuilder.IsZeroValue(opts[i].DevTag) {
-			q = q.Arg("devTag", opts[i].DevTag)
-		}
-		// `dryRun` optional argument
-		if !querybuilder.IsZeroValue(opts[i].DryRun) {
-			q = q.Arg("dryRun", opts[i].DryRun)
-		}
-	}
-
-	return &Node{
-		query: q,
-	}
-}
-
-// Execute a command from the package.json
-func (r *Node) Run(command []string) *Node {
-	q := r.query.Select("run")
-	q = q.Arg("command", command)
-
-	return &Node{
-		query: q,
-	}
-}
-
-// Expose the container as a service
-func (r *Node) Serve() *Service {
-	q := r.query.Select("serve")
-
-	return &Service{
-		query: q,
-	}
-}
-
-// NodeSetupSystemOpts contains options for Node.SetupSystem
-type NodeSetupSystemOpts struct {
-	//
-	// Indicate attempted system package to install
-	//
-	SystemSetupCmds [][]string
-}
-
-// Setup system component like installing packages
-func (r *Node) SetupSystem(opts ...NodeSetupSystemOpts) *Node {
-	q := r.query.Select("setupSystem")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `systemSetupCmds` optional argument
-		if !querybuilder.IsZeroValue(opts[i].SystemSetupCmds) {
-			q = q.Arg("systemSetupCmds", opts[i].SystemSetupCmds)
-		}
-	}
-
-	return &Node{
-		query: q,
-	}
-}
-
-// NodeShellOpts contains options for Node.Shell
-type NodeShellOpts struct {
-	//
-	// The command to execute in the terminal
-	//
-	Cmd []string
-}
-
-// Open a shell in the current container or execute a command inside it, like node
-func (r *Node) Shell(opts ...NodeShellOpts) *Terminal {
-	q := r.query.Select("shell")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `cmd` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Cmd) {
-			q = q.Arg("cmd", opts[i].Cmd)
-		}
-	}
-
-	return &Terminal{
-		query: q,
-	}
-}
-
-// Execute test command
-func (r *Node) Test() *Node {
-	q := r.query.Select("test")
-
-	return &Node{
-		query: q,
-	}
-}
-
-// NodeWithAutoSetupOpts contains options for Node.WithAutoSetup
-type NodeWithAutoSetupOpts struct {
-	//
-	// Patterns to exclude in the analysis for the auto-detection
-	//
-	PatternExclusions []string
-	//
-	// The image name to use
-	//
-	Image string
-	//
-	// Define if the image to use is an alpine or not
-	//
-	IsAlpine bool
-	//
-	// Container options
-	//
-	ContainerPlatform string
-	//
-	// Indicate attempted system package to install
-	//
-	SystemSetupCmds [][]string
-}
-
-// Allow to let the pipeline to be setup automatically based on the package.json aka lazy mode
-func (r *Node) WithAutoSetup(pipelineId string, src *Directory, opts ...NodeWithAutoSetupOpts) *Node {
-	assertNotNil("src", src)
-	q := r.query.Select("withAutoSetup")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `patternExclusions` optional argument
-		if !querybuilder.IsZeroValue(opts[i].PatternExclusions) {
-			q = q.Arg("patternExclusions", opts[i].PatternExclusions)
-		}
-		// `image` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Image) {
-			q = q.Arg("image", opts[i].Image)
-		}
-		// `isAlpine` optional argument
-		if !querybuilder.IsZeroValue(opts[i].IsAlpine) {
-			q = q.Arg("isAlpine", opts[i].IsAlpine)
-		}
-		// `containerPlatform` optional argument
-		if !querybuilder.IsZeroValue(opts[i].ContainerPlatform) {
-			q = q.Arg("containerPlatform", opts[i].ContainerPlatform)
-		}
-		// `systemSetupCmds` optional argument
-		if !querybuilder.IsZeroValue(opts[i].SystemSetupCmds) {
-			q = q.Arg("systemSetupCmds", opts[i].SystemSetupCmds)
-		}
-	}
-	q = q.Arg("pipelineId", pipelineId)
-	q = q.Arg("src", src)
-
-	return &Node{
-		query: q,
-	}
-}
-
-// NodeWithCacheOpts contains options for Node.WithCache
-type NodeWithCacheOpts struct {
-	//
-	// Indicate if the cache volume is mounted or persisted in the container
-	//
-	Persisted bool
-}
-
-// Return the Node container with an additional cache volume in the working dir
-func (r *Node) WithCache(cache *CacheVolume, path string, opts ...NodeWithCacheOpts) *Node {
-	assertNotNil("cache", cache)
-	q := r.query.Select("withCache")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `persisted` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Persisted) {
-			q = q.Arg("persisted", opts[i].Persisted)
-		}
-	}
-	q = q.Arg("cache", cache)
-	q = q.Arg("path", path)
-
-	return &Node{
-		query: q,
-	}
-}
-
-// NodeWithDirectoryOpts contains options for Node.WithDirectory
-type NodeWithDirectoryOpts struct {
-	//
-	// Indicate if the directory is mounted or persisted in the container
-	//
-	Persisted bool
-}
-
-// Return the Node container with an additional directory in the working dir
-func (r *Node) WithDirectory(dir *Directory, path string, opts ...NodeWithDirectoryOpts) *Node {
-	assertNotNil("dir", dir)
-	q := r.query.Select("withDirectory")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `persisted` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Persisted) {
-			q = q.Arg("persisted", opts[i].Persisted)
-		}
-	}
-	q = q.Arg("dir", dir)
-	q = q.Arg("path", path)
-
-	return &Node{
-		query: q,
-	}
-}
-
-// NodeWithFileOpts contains options for Node.WithFile
-type NodeWithFileOpts struct {
-	//
-	// Indicate if the file is mounted or persisted in the container
-	//
-	Persisted bool
-}
-
-// Return the Node container with an additional file in the working dir
-func (r *Node) WithFile(file *File, path string, opts ...NodeWithFileOpts) *Node {
-	assertNotNil("file", file)
-	q := r.query.Select("withFile")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `persisted` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Persisted) {
-			q = q.Arg("persisted", opts[i].Persisted)
-		}
-	}
-	q = q.Arg("file", file)
-	q = q.Arg("path", path)
-
-	return &Node{
-		query: q,
-	}
-}
-
-// NodeWithNpmOpts contains options for Node.WithNpm
-type NodeWithNpmOpts struct {
-	//
-	// Disable mounting cache volumes.
-	//
-	DisableCache bool
-}
-
-// Return the Node container with npm setup as an entrypoint and npm cache setup
-func (r *Node) WithNpm(opts ...NodeWithNpmOpts) *Node {
-	q := r.query.Select("withNpm")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `disableCache` optional argument
-		if !querybuilder.IsZeroValue(opts[i].DisableCache) {
-			q = q.Arg("disableCache", opts[i].DisableCache)
-		}
-	}
-
-	return &Node{
-		query: q,
-	}
-}
-
-// Return the Node container with an environment variable to use in your npmrc file
-func (r *Node) WithNpmrcTokenEnv(name string, value *Secret) *Node {
-	assertNotNil("value", value)
-	q := r.query.Select("withNpmrcTokenEnv")
-	q = q.Arg("name", name)
-	q = q.Arg("value", value)
-
-	return &Node{
-		query: q,
-	}
-}
-
-// Return the Node container with npmrc file
-func (r *Node) WithNpmrcTokenFile(npmrcFile *Secret) *Node {
-	assertNotNil("npmrcFile", npmrcFile)
-	q := r.query.Select("withNpmrcTokenFile")
-	q = q.Arg("npmrcFile", npmrcFile)
-
-	return &Node{
-		query: q,
-	}
-}
-
-// NodeWithPackageManagerOpts contains options for Node.WithPackageManager
-type NodeWithPackageManagerOpts struct {
-	//
-	// Disable mounting cache volumes.
-	//
-	DisableCache bool
-}
-
-// Return the Node container setup with the right package manager and optionaly cache setup
-func (r *Node) WithPackageManager(packageManager string, opts ...NodeWithPackageManagerOpts) *Node {
-	q := r.query.Select("withPackageManager")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `disableCache` optional argument
-		if !querybuilder.IsZeroValue(opts[i].DisableCache) {
-			q = q.Arg("disableCache", opts[i].DisableCache)
-		}
-	}
-	q = q.Arg("packageManager", packageManager)
-
-	return &Node{
-		query: q,
-	}
-}
-
-// Define the pipeline id to use
-func (r *Node) WithPipelineID(pipelineId string) *Node {
-	q := r.query.Select("withPipelineId")
-	q = q.Arg("pipelineId", pipelineId)
-
-	return &Node{
-		query: q,
-	}
-}
-
-// NodeWithSourceOpts contains options for Node.WithSource
-type NodeWithSourceOpts struct {
-	//
-	// Indicate if the directory is mounted or persisted in the container
-	//
-	Persisted bool
-}
-
-// Return the Node container with the source code, 'node_modules' cache set up and workdir set
-func (r *Node) WithSource(src *Directory, opts ...NodeWithSourceOpts) *Node {
-	assertNotNil("src", src)
-	q := r.query.Select("withSource")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `persisted` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Persisted) {
-			q = q.Arg("persisted", opts[i].Persisted)
-		}
-	}
-	q = q.Arg("src", src)
-
-	return &Node{
-		query: q,
-	}
-}
-
-// NodeWithVersionOpts contains options for Node.WithVersion
-type NodeWithVersionOpts struct {
-	//
-	// The image name to use
-	//
-	Image string
-	//
-	// Define if the image to use is an alpine or not
-	//
-	IsAlpine bool
-}
-
-// Return the Node container with the right base image
-func (r *Node) WithVersion(version string, opts ...NodeWithVersionOpts) *Node {
-	q := r.query.Select("withVersion")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `image` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Image) {
-			q = q.Arg("image", opts[i].Image)
-		}
-		// `isAlpine` optional argument
-		if !querybuilder.IsZeroValue(opts[i].IsAlpine) {
-			q = q.Arg("isAlpine", opts[i].IsAlpine)
-		}
-	}
-	q = q.Arg("version", version)
-
-	return &Node{
-		query: q,
-	}
-}
-
-// NodeWithYarnOpts contains options for Node.WithYarn
-type NodeWithYarnOpts struct {
-	//
-	// Disable mounting cache volumes.
-	//
-	DisableCache bool
-}
-
-// Return the Node container with yarn setup as an entrypoint and yarn cache setup
-func (r *Node) WithYarn(opts ...NodeWithYarnOpts) *Node {
-	q := r.query.Select("withYarn")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `disableCache` optional argument
-		if !querybuilder.IsZeroValue(opts[i].DisableCache) {
-			q = q.Arg("disableCache", opts[i].DisableCache)
-		}
-	}
-
-	return &Node{
-		query: q,
-	}
 }
 
 // A definition of a custom object defined in a Module.
@@ -6331,14 +5385,6 @@ func (r *Client) WithGraphQLQuery(q *querybuilder.Selection) *Client {
 	}
 }
 
-func (r *Client) Autodetection() *Autodetection {
-	q := r.query.Select("autodetection")
-
-	return &Autodetection{
-		query: q,
-	}
-}
-
 // Retrieves a content-addressed blob.
 func (r *Client) Blob(digest string, size int, mediaType string, uncompressed string) *Directory {
 	q := r.query.Select("blob")
@@ -6591,36 +5637,6 @@ func (r *Client) HTTP(url string, opts ...HTTPOpts) *File {
 	}
 }
 
-// Load a Autodetection from its ID.
-func (r *Client) LoadAutodetectionFromID(id AutodetectionID) *Autodetection {
-	q := r.query.Select("loadAutodetectionFromID")
-	q = q.Arg("id", id)
-
-	return &Autodetection{
-		query: q,
-	}
-}
-
-// Load a AutodetectionNodeAnalyzer from its ID.
-func (r *Client) LoadAutodetectionNodeAnalyzerFromID(id AutodetectionNodeAnalyzerID) *AutodetectionNodeAnalyzer {
-	q := r.query.Select("loadAutodetectionNodeAnalyzerFromID")
-	q = q.Arg("id", id)
-
-	return &AutodetectionNodeAnalyzer{
-		query: q,
-	}
-}
-
-// Load a AutodetectionOciAnalyzer from its ID.
-func (r *Client) LoadAutodetectionOciAnalyzerFromID(id AutodetectionOciAnalyzerID) *AutodetectionOciAnalyzer {
-	q := r.query.Select("loadAutodetectionOciAnalyzerFromID")
-	q = q.Arg("id", id)
-
-	return &AutodetectionOciAnalyzer{
-		query: q,
-	}
-}
-
 // Load a CacheVolume from its ID.
 func (r *Client) LoadCacheVolumeFromID(id CacheVolumeID) *CacheVolume {
 	q := r.query.Select("loadCacheVolumeFromID")
@@ -6851,12 +5867,22 @@ func (r *Client) LoadModuleSourceFromID(id ModuleSourceID) *ModuleSource {
 	}
 }
 
-// Load a Node from its ID.
-func (r *Client) LoadNodeFromID(id NodeID) *Node {
-	q := r.query.Select("loadNodeFromID")
+// Load a Notify from its ID.
+func (r *Client) LoadNotifyFromID(id NotifyID) *Notify {
+	q := r.query.Select("loadNotifyFromID")
 	q = q.Arg("id", id)
 
-	return &Node{
+	return &Notify{
+		query: q,
+	}
+}
+
+// Load a NotifySlack from its ID.
+func (r *Client) LoadNotifySlackFromID(id NotifySlackID) *NotifySlack {
+	q := r.query.Select("loadNotifySlackFromID")
+	q = q.Arg("id", id)
+
+	return &NotifySlack{
 		query: q,
 	}
 }
@@ -6951,16 +5977,6 @@ func (r *Client) LoadTypeDefFromID(id TypeDefID) *TypeDef {
 	}
 }
 
-// Load a Yq from its ID.
-func (r *Client) LoadYqFromID(id YqID) *Yq {
-	q := r.query.Select("loadYqFromID")
-	q = q.Arg("id", id)
-
-	return &Yq{
-		query: q,
-	}
-}
-
 // Create a new module.
 func (r *Client) Module() *Module {
 	q := r.query.Select("module")
@@ -7015,10 +6031,10 @@ func (r *Client) ModuleSource(refString string, opts ...ModuleSourceOpts) *Modul
 	}
 }
 
-func (r *Client) Node() *Node {
-	q := r.query.Select("node")
+func (r *Client) Notify() *Notify {
+	q := r.query.Select("notify")
 
-	return &Node{
+	return &Notify{
 		query: q,
 	}
 }
@@ -7111,38 +6127,6 @@ func (r *Client) TypeDef() *TypeDef {
 	q := r.query.Select("typeDef")
 
 	return &TypeDef{
-		query: q,
-	}
-}
-
-// YqOpts contains options for Client.Yq
-type YqOpts struct {
-	//
-	// The image to use for yq
-	//
-	Image string
-	//
-	// The version of the image to use
-	//
-	Version string
-}
-
-func (r *Client) Yq(source *Directory, opts ...YqOpts) *Yq {
-	assertNotNil("source", source)
-	q := r.query.Select("yq")
-	for i := len(opts) - 1; i >= 0; i-- {
-		// `image` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Image) {
-			q = q.Arg("image", opts[i].Image)
-		}
-		// `version` optional argument
-		if !querybuilder.IsZeroValue(opts[i].Version) {
-			q = q.Arg("version", opts[i].Version)
-		}
-	}
-	q = q.Arg("source", source)
-
-	return &Yq{
 		query: q,
 	}
 }
@@ -8186,140 +7170,6 @@ func (r *TypeDef) WithOptional(optional bool) *TypeDef {
 	q = q.Arg("optional", optional)
 
 	return &TypeDef{
-		query: q,
-	}
-}
-
-type Yq struct {
-	query *querybuilder.Selection
-
-	get *string
-	id  *YqID
-}
-type WithYqFunc func(r *Yq) *Yq
-
-// With calls the provided function with current Yq.
-//
-// This is useful for reusability and readability by not breaking the calling chain.
-func (r *Yq) With(f WithYqFunc) *Yq {
-	return f(r)
-}
-
-func (r *Yq) WithGraphQLQuery(q *querybuilder.Selection) *Yq {
-	return &Yq{
-		query: q,
-	}
-}
-
-// Get the yq container
-func (r *Yq) Container() *Container {
-	q := r.query.Select("container")
-
-	return &Container{
-		query: q,
-	}
-}
-
-// Fetch a value from a yaml file
-func (r *Yq) Get(ctx context.Context, expr string, yamlFilePath string) (string, error) {
-	if r.get != nil {
-		return *r.get, nil
-	}
-	q := r.query.Select("get")
-	q = q.Arg("expr", expr)
-	q = q.Arg("yamlFilePath", yamlFilePath)
-
-	var response string
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-// A unique identifier for this Yq.
-func (r *Yq) ID(ctx context.Context) (YqID, error) {
-	if r.id != nil {
-		return *r.id, nil
-	}
-	q := r.query.Select("id")
-
-	var response YqID
-
-	q = q.Bind(&response)
-	return response, q.Execute(ctx)
-}
-
-// XXX_GraphQLType is an internal function. It returns the native GraphQL type name
-func (r *Yq) XXX_GraphQLType() string {
-	return "Yq"
-}
-
-// XXX_GraphQLIDType is an internal function. It returns the native GraphQL type name for the ID of this object
-func (r *Yq) XXX_GraphQLIDType() string {
-	return "YqID"
-}
-
-// XXX_GraphQLID is an internal function. It returns the underlying type ID
-func (r *Yq) XXX_GraphQLID(ctx context.Context) (string, error) {
-	id, err := r.ID(ctx)
-	if err != nil {
-		return "", err
-	}
-	return string(id), nil
-}
-
-func (r *Yq) MarshalJSON() ([]byte, error) {
-	id, err := r.ID(context.Background())
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(id)
-}
-func (r *Yq) UnmarshalJSON(bs []byte) error {
-	var id string
-	err := json.Unmarshal(bs, &id)
-	if err != nil {
-		return err
-	}
-	*r = *dag.LoadYqFromID(YqID(id))
-	return nil
-}
-
-// Edit a yaml file following the given expression
-func (r *Yq) Set(expr string, yamlFilePath string) *Yq {
-	q := r.query.Select("set")
-	q = q.Arg("expr", expr)
-	q = q.Arg("yamlFilePath", yamlFilePath)
-
-	return &Yq{
-		query: q,
-	}
-}
-
-// Open a shell in the current container
-func (r *Yq) Shell() *Terminal {
-	q := r.query.Select("shell")
-
-	return &Terminal{
-		query: q,
-	}
-}
-
-// Get the directory given to Yq
-func (r *Yq) State() *Directory {
-	q := r.query.Select("state")
-
-	return &Directory{
-		query: q,
-	}
-}
-
-// Override the source directory
-func (r *Yq) WithDirectory(source *Directory) *Yq {
-	assertNotNil("source", source)
-	q := r.query.Select("withDirectory")
-	q = q.Arg("source", source)
-
-	return &Yq{
 		query: q,
 	}
 }

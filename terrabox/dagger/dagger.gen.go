@@ -4,9 +4,9 @@ package main
 
 import (
 	"context"
+	"dagger/terrabox/internal/dagger"
 	"encoding/json"
 	"fmt"
-	"main/internal/dagger"
 	"os"
 )
 
@@ -15,15 +15,6 @@ var dag = dagger.Connect()
 type DaggerObject = dagger.DaggerObject
 
 type ExecError = dagger.ExecError
-
-// The `AutodetectionID` scalar type represents an identifier for an object of type Autodetection.
-type AutodetectionID = dagger.AutodetectionID
-
-// The `AutodetectionNodeAnalyzerID` scalar type represents an identifier for an object of type AutodetectionNodeAnalyzer.
-type AutodetectionNodeAnalyzerID = dagger.AutodetectionNodeAnalyzerID
-
-// The `AutodetectionOciAnalyzerID` scalar type represents an identifier for an object of type AutodetectionOciAnalyzer.
-type AutodetectionOciAnalyzerID = dagger.AutodetectionOciAnalyzerID
 
 // The `CacheVolumeID` scalar type represents an identifier for an object of type CacheVolume.
 type CacheVolumeID = dagger.CacheVolumeID
@@ -97,9 +88,6 @@ type ModuleID = dagger.ModuleID
 // The `ModuleSourceID` scalar type represents an identifier for an object of type ModuleSource.
 type ModuleSourceID = dagger.ModuleSourceID
 
-// The `NodeID` scalar type represents an identifier for an object of type Node.
-type NodeID = dagger.NodeID
-
 // The `ObjectTypeDefID` scalar type represents an identifier for an object of type ObjectTypeDef.
 type ObjectTypeDefID = dagger.ObjectTypeDefID
 
@@ -123,22 +111,16 @@ type SocketID = dagger.SocketID
 // The `TerminalID` scalar type represents an identifier for an object of type Terminal.
 type TerminalID = dagger.TerminalID
 
-// The `TerraboxID` scalar type represents an identifier for an object of type Terrabox.
-type TerraboxID = dagger.TerraboxID
-
-// The `TerraboxTfID` scalar type represents an identifier for an object of type TerraboxTf.
-type TerraboxTfID = dagger.TerraboxTfID
-
 // The `TypeDefID` scalar type represents an identifier for an object of type TypeDef.
 type TypeDefID = dagger.TypeDefID
+
+// The `UtilsID` scalar type represents an identifier for an object of type Utils.
+type UtilsID = dagger.UtilsID
 
 // The absence of a value.
 //
 // A Null Void is used as a placeholder for resolvers that do not return anything.
 type Void = dagger.Void
-
-// The `YqID` scalar type represents an identifier for an object of type Yq.
-type YqID = dagger.YqID
 
 // Key value object that represents a build argument.
 type BuildArg = dagger.BuildArg
@@ -148,18 +130,6 @@ type PipelineLabel = dagger.PipelineLabel
 
 // Port forwarding rules for tunneling network traffic.
 type PortForward = dagger.PortForward
-
-type Autodetection = dagger.Autodetection
-
-// AutodetectionNodeOpts contains options for Autodetection.Node
-type AutodetectionNodeOpts = dagger.AutodetectionNodeOpts
-
-// AutodetectionOciOpts contains options for Autodetection.Oci
-type AutodetectionOciOpts = dagger.AutodetectionOciOpts
-
-type AutodetectionNodeAnalyzer = dagger.AutodetectionNodeAnalyzer
-
-type AutodetectionOciAnalyzer = dagger.AutodetectionOciAnalyzer
 
 // A directory whose contents persist across runs.
 type CacheVolume = dagger.CacheVolume
@@ -361,55 +331,6 @@ type ModuleSource = dagger.ModuleSource
 
 type WithModuleSourceFunc = dagger.WithModuleSourceFunc
 
-type Node = dagger.Node
-
-type WithNodeFunc = dagger.WithNodeFunc
-
-// NodeBumpVersionOpts contains options for Node.BumpVersion
-type NodeBumpVersionOpts = dagger.NodeBumpVersionOpts
-
-// NodeOciBuildOpts contains options for Node.OciBuild
-type NodeOciBuildOpts = dagger.NodeOciBuildOpts
-
-// NodePipelineOpts contains options for Node.Pipeline
-type NodePipelineOpts = dagger.NodePipelineOpts
-
-// NodePublishOpts contains options for Node.Publish
-type NodePublishOpts = dagger.NodePublishOpts
-
-// NodeSetupSystemOpts contains options for Node.SetupSystem
-type NodeSetupSystemOpts = dagger.NodeSetupSystemOpts
-
-// NodeShellOpts contains options for Node.Shell
-type NodeShellOpts = dagger.NodeShellOpts
-
-// NodeWithAutoSetupOpts contains options for Node.WithAutoSetup
-type NodeWithAutoSetupOpts = dagger.NodeWithAutoSetupOpts
-
-// NodeWithCacheOpts contains options for Node.WithCache
-type NodeWithCacheOpts = dagger.NodeWithCacheOpts
-
-// NodeWithDirectoryOpts contains options for Node.WithDirectory
-type NodeWithDirectoryOpts = dagger.NodeWithDirectoryOpts
-
-// NodeWithFileOpts contains options for Node.WithFile
-type NodeWithFileOpts = dagger.NodeWithFileOpts
-
-// NodeWithNpmOpts contains options for Node.WithNpm
-type NodeWithNpmOpts = dagger.NodeWithNpmOpts
-
-// NodeWithPackageManagerOpts contains options for Node.WithPackageManager
-type NodeWithPackageManagerOpts = dagger.NodeWithPackageManagerOpts
-
-// NodeWithSourceOpts contains options for Node.WithSource
-type NodeWithSourceOpts = dagger.NodeWithSourceOpts
-
-// NodeWithVersionOpts contains options for Node.WithVersion
-type NodeWithVersionOpts = dagger.NodeWithVersionOpts
-
-// NodeWithYarnOpts contains options for Node.WithYarn
-type NodeWithYarnOpts = dagger.NodeWithYarnOpts
-
 // A definition of a custom object defined in a Module.
 type ObjectTypeDef = dagger.ObjectTypeDef
 
@@ -445,9 +366,6 @@ type PipelineOpts = dagger.PipelineOpts
 // SecretOpts contains options for Client.Secret
 type SecretOpts = dagger.SecretOpts
 
-// YqOpts contains options for Client.Yq
-type YqOpts = dagger.YqOpts
-
 // A reference to a secret value, which can be handled more safely than the value itself.
 type Secret = dagger.Secret
 
@@ -469,24 +387,6 @@ type Socket = dagger.Socket
 // An interactive terminal that clients can connect to.
 type Terminal = dagger.Terminal
 
-type Terrabox = dagger.Terrabox
-
-// TerraboxTerragruntOpts contains options for Terrabox.Terragrunt
-type TerraboxTerragruntOpts = dagger.TerraboxTerragruntOpts
-
-type TerraboxTf = dagger.TerraboxTf
-
-type WithTerraboxTfFunc = dagger.WithTerraboxTfFunc
-
-// TerraboxTfApplyOpts contains options for TerraboxTf.Apply
-type TerraboxTfApplyOpts = dagger.TerraboxTfApplyOpts
-
-// TerraboxTfPlanOpts contains options for TerraboxTf.Plan
-type TerraboxTfPlanOpts = dagger.TerraboxTfPlanOpts
-
-// TerraboxTfWithCacheBursterOpts contains options for TerraboxTf.WithCacheBurster
-type TerraboxTfWithCacheBursterOpts = dagger.TerraboxTfWithCacheBursterOpts
-
 // A definition of a parameter or return type in a Module.
 type TypeDef = dagger.TypeDef
 
@@ -501,9 +401,7 @@ type TypeDefWithInterfaceOpts = dagger.TypeDefWithInterfaceOpts
 // TypeDefWithObjectOpts contains options for TypeDef.WithObject
 type TypeDefWithObjectOpts = dagger.TypeDefWithObjectOpts
 
-type Yq = dagger.Yq
-
-type WithYqFunc = dagger.WithYqFunc
+type Utils = dagger.Utils
 
 // Sharing mode of the cache volume.
 type CacheSharingMode = dagger.CacheSharingMode
@@ -611,17 +509,49 @@ func convertSlice[I any, O any](in []I, f func(I) O) []O {
 	return out
 }
 
-func (r Ci) MarshalJSON() ([]byte, error) {
+func (r Terrabox) MarshalJSON() ([]byte, error) {
 	var concrete struct{}
 	return json.Marshal(&concrete)
 }
 
-func (r *Ci) UnmarshalJSON(bs []byte) error {
+func (r *Terrabox) UnmarshalJSON(bs []byte) error {
 	var concrete struct{}
 	err := json.Unmarshal(bs, &concrete)
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func (r Tf) MarshalJSON() ([]byte, error) {
+	var concrete struct {
+		Ctr      *Container
+		Bin      string
+		RootPath string
+		NoColor  bool
+	}
+	concrete.Ctr = r.Ctr
+	concrete.Bin = r.Bin
+	concrete.RootPath = r.RootPath
+	concrete.NoColor = r.NoColor
+	return json.Marshal(&concrete)
+}
+
+func (r *Tf) UnmarshalJSON(bs []byte) error {
+	var concrete struct {
+		Ctr      *Container
+		Bin      string
+		RootPath string
+		NoColor  bool
+	}
+	err := json.Unmarshal(bs, &concrete)
+	if err != nil {
+		return err
+	}
+	r.Ctr = concrete.Ctr
+	r.Bin = concrete.Bin
+	r.RootPath = concrete.RootPath
+	r.NoColor = concrete.NoColor
 	return nil
 }
 
@@ -684,88 +614,310 @@ func main() {
 
 func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName string, inputArgs map[string][]byte) (_ any, err error) {
 	switch parentName {
-	case "Ci":
+	case "Terrabox":
 		switch fnName {
-		case "Yq":
-			var parent Ci
+		case "Terragrunt":
+			var parent Terrabox
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var testDataSrc *Directory
-			if inputArgs["testDataSrc"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["testDataSrc"]), &testDataSrc)
+			var image string
+			if inputArgs["image"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["image"]), &image)
 				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg testDataSrc", err))
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg image", err))
 				}
 			}
-			return nil, (*Ci).Yq(&parent, ctx, testDataSrc)
-		case "Autodetection":
-			var parent Ci
+			var version string
+			if inputArgs["version"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["version"]), &version)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg version", err))
+				}
+			}
+			return (*Terrabox).Terragrunt(&parent, image, version), nil
+		default:
+			return nil, fmt.Errorf("unknown function %s", fnName)
+		}
+	case "Tf":
+		switch fnName {
+		case "WithSource":
+			var parent Tf
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var testDataSrc *Directory
-			if inputArgs["testDataSrc"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["testDataSrc"]), &testDataSrc)
+			var path string
+			if inputArgs["path"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["path"]), &path)
 				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg testDataSrc", err))
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg path", err))
 				}
 			}
-			return nil, (*Ci).Autodetection(&parent, ctx, testDataSrc)
-		case "Node":
-			var parent Ci
+			var src *Directory
+			if inputArgs["src"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["src"]), &src)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg src", err))
+				}
+			}
+			return (*Tf).WithSource(&parent, path, src), nil
+		case "WithContainer":
+			var parent Tf
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var testDataSrc *Directory
-			if inputArgs["testDataSrc"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["testDataSrc"]), &testDataSrc)
+			var ctr *Container
+			if inputArgs["ctr"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["ctr"]), &ctr)
 				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg testDataSrc", err))
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg ctr", err))
 				}
 			}
-			return nil, (*Ci).Node(&parent, ctx, testDataSrc)
-		case "Terrabox":
-			var parent Ci
+			return (*Tf).WithContainer(&parent, ctr), nil
+		case "WithSecretDotEnv":
+			var parent Tf
 			err = json.Unmarshal(parentJSON, &parent)
 			if err != nil {
 				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
 			}
-			var testDataSrc *Directory
-			if inputArgs["testDataSrc"] != nil {
-				err = json.Unmarshal([]byte(inputArgs["testDataSrc"]), &testDataSrc)
+			var dotEnv *Secret
+			if inputArgs["dotEnv"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["dotEnv"]), &dotEnv)
 				if err != nil {
-					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg testDataSrc", err))
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg dotEnv", err))
 				}
 			}
-			return nil, (*Ci).Terrabox(&parent, ctx, testDataSrc)
+			return (*Tf).WithSecretDotEnv(&parent, dotEnv), nil
+		case "DisableColor":
+			var parent Tf
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			return (*Tf).DisableColor(&parent), nil
+		case "Container":
+			var parent Tf
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			return (*Tf).Container(&parent), nil
+		case "Do":
+			var parent Tf
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			return (*Tf).Do(&parent, ctx)
+		case "Directory":
+			var parent Tf
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			return (*Tf).Directory(&parent), nil
+		case "Shell":
+			var parent Tf
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			return (*Tf).Shell(&parent), nil
+		case "Plan":
+			var parent Tf
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var workDir string
+			if inputArgs["workDir"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["workDir"]), &workDir)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg workDir", err))
+				}
+			}
+			var destroyMode bool
+			if inputArgs["destroyMode"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["destroyMode"]), &destroyMode)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg destroyMode", err))
+				}
+			}
+			var detailedExitCode bool
+			if inputArgs["detailedExitCode"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["detailedExitCode"]), &detailedExitCode)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg detailedExitCode", err))
+				}
+			}
+			return (*Tf).Plan(&parent, workDir, destroyMode, detailedExitCode), nil
+		case "Apply":
+			var parent Tf
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var workDir string
+			if inputArgs["workDir"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["workDir"]), &workDir)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg workDir", err))
+				}
+			}
+			var destroyMode bool
+			if inputArgs["destroyMode"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["destroyMode"]), &destroyMode)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg destroyMode", err))
+				}
+			}
+			return (*Tf).Apply(&parent, workDir, destroyMode), nil
+		case "Format":
+			var parent Tf
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var workDir string
+			if inputArgs["workDir"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["workDir"]), &workDir)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg workDir", err))
+				}
+			}
+			var check bool
+			if inputArgs["check"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["check"]), &check)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg check", err))
+				}
+			}
+			return (*Tf).Format(&parent, workDir, check), nil
+		case "Output":
+			var parent Tf
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var workDir string
+			if inputArgs["workDir"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["workDir"]), &workDir)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg workDir", err))
+				}
+			}
+			var isJson bool
+			if inputArgs["isJson"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["isJson"]), &isJson)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg isJson", err))
+				}
+			}
+			return (*Tf).Output(&parent, workDir, isJson), nil
+		case "RunAll":
+			var parent Tf
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			var workDir string
+			if inputArgs["workDir"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["workDir"]), &workDir)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg workDir", err))
+				}
+			}
+			var cmd string
+			if inputArgs["cmd"] != nil {
+				err = json.Unmarshal([]byte(inputArgs["cmd"]), &cmd)
+				if err != nil {
+					panic(fmt.Errorf("%s: %w", "failed to unmarshal input arg cmd", err))
+				}
+			}
+			return (*Tf).RunAll(&parent, workDir, cmd), nil
+		case "Catalog":
+			var parent Tf
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				panic(fmt.Errorf("%s: %w", "failed to unmarshal parent object", err))
+			}
+			return (*Tf).Catalog(&parent), nil
 		default:
 			return nil, fmt.Errorf("unknown function %s", fnName)
 		}
 	case "":
 		return dag.Module().
-			WithDescription("A generated module for Ci functions\n\nThis module has been generated via dagger init and serves as a reference to\nbasic module structure as you get started with Dagger.\n\nTwo functions have been pre-created. You can modify, delete, or add to them,\nas needed. They demonstrate usage of arguments and return types using simple\necho and grep commands. The functions can be called from the dagger CLI or\nfrom one of the SDKs.\n\nThe first line in this comment block is a short description line and the\nrest is a long description with more detail on the module's purpose or usage,\nif appropriate. All modules should have a short description.\n").
+			WithDescription("A generated module for Terrabox functions\n\nThis module has been generated via dagger init and serves as a reference to\nbasic module structure as you get started with Dagger.\n\nTwo functions have been pre-created. You can modify, delete, or add to them,\nas needed. They demonstrate usage of arguments and return types using simple\necho and grep commands. The functions can be called from the dagger CLI or\nfrom one of the SDKs.\n\nThe first line in this comment block is a short description line and the\nrest is a long description with more detail on the module's purpose or usage,\nif appropriate. All modules should have a short description.\n").
 			WithObject(
-				dag.TypeDef().WithObject("Ci").
+				dag.TypeDef().WithObject("Terrabox").
 					WithFunction(
-						dag.Function("Yq",
-							dag.TypeDef().WithKind(VoidKind).WithOptional(true)).
-							WithArg("testDataSrc", dag.TypeDef().WithObject("Directory"))).
+						dag.Function("Terragrunt",
+							dag.TypeDef().WithObject("Tf")).
+							WithDescription("Returns a container that echoes whatever string argument is provided").
+							WithArg("image", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "The image to use which contain terragrunt ecosystem", DefaultValue: JSON("\"alpine/terragrunt\"")}).
+							WithArg("version", dag.TypeDef().WithKind(StringKind).WithOptional(true), FunctionWithArgOpts{Description: "The version of the image to use", DefaultValue: JSON("\"1.7.4\"")}))).
+			WithObject(
+				dag.TypeDef().WithObject("Tf").
 					WithFunction(
-						dag.Function("Autodetection",
-							dag.TypeDef().WithKind(VoidKind).WithOptional(true)).
-							WithArg("testDataSrc", dag.TypeDef().WithObject("Directory"))).
+						dag.Function("WithSource",
+							dag.TypeDef().WithObject("Tf")).
+							WithArg("path", dag.TypeDef().WithKind(StringKind)).
+							WithArg("src", dag.TypeDef().WithObject("Directory"))).
 					WithFunction(
-						dag.Function("Node",
-							dag.TypeDef().WithKind(VoidKind).WithOptional(true)).
-							WithArg("testDataSrc", dag.TypeDef().WithObject("Directory"))).
+						dag.Function("WithContainer",
+							dag.TypeDef().WithObject("Tf")).
+							WithArg("ctr", dag.TypeDef().WithObject("Container"))).
 					WithFunction(
-						dag.Function("Terrabox",
-							dag.TypeDef().WithKind(VoidKind).WithOptional(true)).
-							WithArg("testDataSrc", dag.TypeDef().WithObject("Directory")))), nil
+						dag.Function("WithSecretDotEnv",
+							dag.TypeDef().WithObject("Tf")).
+							WithArg("dotEnv", dag.TypeDef().WithObject("Secret"))).
+					WithFunction(
+						dag.Function("DisableColor",
+							dag.TypeDef().WithObject("Tf"))).
+					WithFunction(
+						dag.Function("Container",
+							dag.TypeDef().WithObject("Container"))).
+					WithFunction(
+						dag.Function("Do",
+							dag.TypeDef().WithKind(StringKind))).
+					WithFunction(
+						dag.Function("Directory",
+							dag.TypeDef().WithObject("Directory"))).
+					WithFunction(
+						dag.Function("Shell",
+							dag.TypeDef().WithObject("Terminal"))).
+					WithFunction(
+						dag.Function("Plan",
+							dag.TypeDef().WithObject("Tf")).
+							WithArg("workDir", dag.TypeDef().WithKind(StringKind), FunctionWithArgOpts{Description: "Define the path where to execute the command"}).
+							WithArg("destroyMode", dag.TypeDef().WithKind(BooleanKind).WithOptional(true), FunctionWithArgOpts{Description: "Define if we are executing the plan in destroy mode or not"}).
+							WithArg("detailedExitCode", dag.TypeDef().WithKind(BooleanKind).WithOptional(true), FunctionWithArgOpts{Description: "Define if the exit code is in detailed mode or not (0 - Succeeded, diff is empty (no changes) | 1 - Errored | 2 - Succeeded, there is a diff)"})).
+					WithFunction(
+						dag.Function("Apply",
+							dag.TypeDef().WithObject("Tf")).
+							WithArg("workDir", dag.TypeDef().WithKind(StringKind), FunctionWithArgOpts{Description: "Define the path where to execute the command"}).
+							WithArg("destroyMode", dag.TypeDef().WithKind(BooleanKind).WithOptional(true), FunctionWithArgOpts{Description: "Define if we are executing the plan in destroy mode or not"})).
+					WithFunction(
+						dag.Function("Format",
+							dag.TypeDef().WithObject("Tf")).
+							WithArg("workDir", dag.TypeDef().WithKind(StringKind)).
+							WithArg("check", dag.TypeDef().WithKind(BooleanKind))).
+					WithFunction(
+						dag.Function("Output",
+							dag.TypeDef().WithObject("Tf")).
+							WithArg("workDir", dag.TypeDef().WithKind(StringKind)).
+							WithArg("isJson", dag.TypeDef().WithKind(BooleanKind))).
+					WithFunction(
+						dag.Function("RunAll",
+							dag.TypeDef().WithObject("Tf")).
+							WithArg("workDir", dag.TypeDef().WithKind(StringKind)).
+							WithArg("cmd", dag.TypeDef().WithKind(StringKind))).
+					WithFunction(
+						dag.Function("Catalog",
+							dag.TypeDef().WithObject("Terminal")))), nil
 	default:
 		return nil, fmt.Errorf("unknown object %s", parentName)
 	}

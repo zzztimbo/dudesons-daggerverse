@@ -6,11 +6,14 @@ import (
 	"text/template"
 )
 
+// Send the report formated to slack
 func (d *Drift) ReportToSlack(
 	ctx context.Context,
+	// The slack token to use
 	token *Secret,
+	// The channel  id where the report will be posted
 	channelId string,
-	// blabla
+	// Define the sidebar color of the message in slack
 	// +optional
 	// +default="#9512a6"
 	color string,

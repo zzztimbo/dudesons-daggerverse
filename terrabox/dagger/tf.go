@@ -87,11 +87,16 @@ func (t *Tf) Shell() *Terminal {
 	return t.Ctr.WithDefaultTerminalCmd(nil).Terminal()
 }
 
+// Define the cache buster strategy
 func (t *Tf) WithCacheBurster(
-	// Define if the cache burster level is done per day (daily), per hour (hour), per minute (minute), per second (default)
+	// Define if the cache burster level is done per day ('daily'), per hour ('hour'), per minute ('minute'), per second ('default') or no cache buster ('none')
 	// +optional
 	cacheBursterLevel string,
 ) *Tf {
+	if cacheBursterLevel == "none" {
+		return t
+	}
+
 	utcNow := time.Now().UTC()
 	cacheBursterKey := fmt.Sprintf("%d%d%d", utcNow.Year(), utcNow.Month(), utcNow.Day())
 
